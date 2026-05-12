@@ -32,3 +32,6 @@ class User(db.Model):
         db.DateTime,
         default=datetime.utcnow
     )
+
+    def __repr__(self):
+        return f"<User {self.email}>"

@@ -4,6 +4,7 @@ from app.controllers.auth_controller import (
     register_user
 )
 
+
 auth_bp = Blueprint(
     "auth",
     __name__,
