@@ -1,4 +1,5 @@
 from flask import Flask
+import jwt
 
 from app.config.config import Config
 
@@ -6,7 +7,8 @@ from app.extensions.extensions import (
     db,
     migrate,
     bcrypt,
-    ma
+    ma,
+    jwt
 )
 
 from app.models import *
@@ -24,7 +26,7 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     ma.init_app(app)
-
+    jwt.init_app(app)
     app.register_blueprint(auth_bp)
 
     with app.app_context():

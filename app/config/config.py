@@ -5,3 +5,5 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     SECRET_KEY = "supersecretkey"
+
+    JWT_SECRET_KEY = " this-is-a-very-secure-jwt-secret-key-2026"
