@@ -1,25 +1,41 @@
-from flask import request, jsonify
+from flask import request
 
 from marshmallow import ValidationError
+
+from flask_jwt_extended import (
+    create_access_token,
+    get_jwt_identity
+)
 
 from app.extensions.extensions import db
 
 from app.models.user import User
 
-from app.schemas.user_schema import UserRegisterSchema
+from app.schemas.user_schema import (
+    UserRegisterSchema
+)
 
-from app.services.auth_service import hash_password
+from app.schemas.login_schema import (
+    LoginSchema
+)
 
-from flask_jwt_extended import ( create_access_token,  jwt_required, get_jwt_identity )
+from app.services.auth_service import (
+    hash_password,
+    verify_password
+)
 
-from app.schemas.login_schema import LoginSchema
-
-from app.services.auth_service import ( hash_password, verify_password )
+from app.utils.response import (
+    success_response,
+    error_response
+)
 
 
 register_schema = UserRegisterSchema()
 
 login_schema = LoginSchema()
+
+
+# REGISTER USER
 
 def register_user():
 
@@ -35,9 +51,10 @@ def register_user():
 
         if existing_user:
 
-            return jsonify({
-                "error": "Email already exists"
-            }), 400
+            return error_response(
+                message="Email already exists",
+                status_code=400
+            )
 
         hashed_password = hash_password(
             validated_data["password"]
@@ -50,24 +67,39 @@ def register_user():
         )
 
         db.session.add(new_user)
+
         db.session.commit()
 
-        return jsonify({
-            "message": "User registered successfully"
-        }), 201
+        return success_response(
+            message="User registered successfully",
+            data={
+                "user": {
+                    "id": new_user.id,
+                    "full_name": new_user.full_name,
+                    "email": new_user.email
+                }
+            },
+            status_code=201
+        )
 
     except ValidationError as err:
 
-        return jsonify({
-            "errors": err.messages
-        }), 400
+        return error_response(
+            message="Validation failed",
+            errors=err.messages,
+            status_code=400
+        )
 
     except Exception as e:
 
-        return jsonify({
-            "error": str(e)
-        }), 500
-    
+        return error_response(
+            message="Registration failed",
+            errors=str(e),
+            status_code=500
+        )
+
+
+# LOGIN USER
 
 def login_user():
 
@@ -83,9 +115,10 @@ def login_user():
 
         if not user:
 
-            return jsonify({
-                "error": "Invalid email or password"
-            }), 401
+            return error_response(
+                message="Invalid email or password",
+                status_code=401
+            )
 
         password_valid = verify_password(
             user.password_hash,
@@ -94,42 +127,65 @@ def login_user():
 
         if not password_valid:
 
-            return jsonify({
-                "error": "Invalid email or password"
-            }), 401
+            return error_response(
+                message="Invalid email or password",
+                status_code=401
+            )
 
         access_token = create_access_token(
             identity=str(user.id)
         )
 
-        return jsonify({
-            "message": "Login successful",
-            "access_token": access_token,
-            "user": {
-                "id": user.id,
-                "full_name": user.full_name,
-                "email": user.email
-            }
-        }), 200
+        return success_response(
+            message="Login successful",
+            data={
+                "access_token": access_token,
+                "user": {
+                    "id": user.id,
+                    "full_name": user.full_name,
+                    "email": user.email
+                }
+            },
+            status_code=200
+        )
+
+    except ValidationError as err:
+
+        return error_response(
+            message="Validation failed",
+            errors=err.messages,
+            status_code=400
+        )
 
     except Exception as e:
 
-        return jsonify({
-            "error": str(e)
-        }), 500    
-    
+        return error_response(
+            message="Login failed",
+            errors=str(e),
+            status_code=500
+        )
+
+
+# PROTECTED ROUTE
+
 def protected_route():
 
     current_user_id = get_jwt_identity()
 
-    return jsonify({
-        "message": "Access granted",
-        "user_id": current_user_id
-    }), 200
+    return success_response(
+        message="Access granted",
+        data={
+            "user_id": current_user_id
+        },
+        status_code=200
+    )
 
+
+# LOGOUT USER
 
 def logout_user():
 
-    return jsonify({
-        "message": "Logout successful"
-    }), 200
+    return success_response(
+        message="Logout successful",
+        status_code=200
+    )
