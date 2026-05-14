@@ -12,17 +12,19 @@ from app.extensions.extensions import db
 from app.models.user import User
 from app.models.role import Role
 
-from app.schemas.user_schema import (
-    UserRegisterSchema
-)
+from app.schemas.user_schema import UserRegisterSchema
+from app.schemas.login_schema import LoginSchema
 
-from app.schemas.login_schema import (
-    LoginSchema
+from app.schemas.forgot_password_schema import (
+    forgot_password_schema,
+    reset_password_schema
 )
 
 from app.services.auth_service import (
     hash_password,
-    verify_password
+    verify_password,
+    request_password_reset,
+    reset_password as service_reset_password
 )
 
 from app.utils.response import (
@@ -181,6 +183,93 @@ def login_user():
 
         return error_response(
             message="Login failed",
+            errors=str(e),
+            status_code=500
+        )
+
+
+# FORGOT PASSWORD
+
+def forgot_password():
+
+    try:
+
+        data = request.get_json()
+
+        validated_data = forgot_password_schema.load(data)
+
+        success, message = request_password_reset(
+            validated_data["email"]
+        )
+
+        if not success:
+
+            return error_response(
+                message=message,
+                status_code=400
+            )
+
+        return success_response(
+            message=message,
+            status_code=200
+        )
+
+    except ValidationError as err:
+
+        return error_response(
+            message="Validation failed",
+            errors=err.messages,
+            status_code=400
+        )
+
+    except Exception as e:
+
+        return error_response(
+            message="An error occurred. Please try again.",
+            errors=str(e),
+            status_code=500
+        )
+
+
+# RESET PASSWORD
+
+def reset_password():
+
+    try:
+
+        data = request.get_json()
+
+        validated_data = reset_password_schema.load(data)
+
+        success, message = service_reset_password(
+            validated_data["token"],
+            validated_data["password"]
+        )
+
+        if not success:
+
+            return error_response(
+                message=message,
+                status_code=400
+            )
+
+        return success_response(
+            message=message,
+            status_code=200
+        )
+
+    except ValidationError as err:
+
+        return error_response(
+            message="Validation failed",
+            errors=err.messages,
+            status_code=400
+        )
+
+    except Exception as e:
+
+        return error_response(
+            message="An error occurred. Please try again.",
             errors=str(e),
             status_code=500
         )

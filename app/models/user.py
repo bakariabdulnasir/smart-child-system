@@ -38,6 +38,8 @@ class User(db.Model):
         default=datetime.utcnow
     )
 
+    # ROLE RELATIONSHIP
+
     role_id = db.Column(
         db.Integer,
         db.ForeignKey("roles.id"),
@@ -48,6 +50,20 @@ class User(db.Model):
         "Role",
         back_populates="users"
     )
+
+    # PASSWORD RESET
+
+    reset_password_token = db.Column(
+        db.String(255),
+        nullable=True
+    )
+
+    reset_password_expires = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
+    # RELATIONSHIPS
 
     children = db.relationship(
         "Child",
