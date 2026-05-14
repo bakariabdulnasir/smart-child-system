@@ -28,10 +28,30 @@ class User(db.Model):
         nullable=False
     )
 
+    is_active = db.Column(
+        db.Boolean,
+        default=True
+    )
+
     created_at = db.Column(
         db.DateTime,
         default=datetime.utcnow
     )
+
+    # ROLE RELATIONSHIP
+
+    role_id = db.Column(
+        db.Integer,
+        db.ForeignKey("roles.id"),
+        nullable=False
+    )
+
+    role = db.relationship(
+        "Role",
+        back_populates="users"
+    )
+
+    # PASSWORD RESET
 
     reset_password_token = db.Column(
         db.String(255),
@@ -43,5 +63,38 @@ class User(db.Model):
         nullable=True
     )
 
+    # RELATIONSHIPS
+
+    children = db.relationship(
+        "Child",
+        back_populates="parent",
+        cascade="all, delete"
+    )
+
+    schedules = db.relationship(
+        "Schedule",
+        back_populates="user",
+        cascade="all, delete"
+    )
+
+    reminders = db.relationship(
+        "Reminder",
+        back_populates="user",
+        cascade="all, delete"
+    )
+
+    events = db.relationship(
+        "Event",
+        back_populates="user",
+        cascade="all, delete"
+    )
+
+    notifications = db.relationship(
+        "Notification",
+        back_populates="user",
+        cascade="all, delete"
+    )
+
     def __repr__(self):
+
         return f"<User {self.email}>"

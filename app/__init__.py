@@ -15,6 +15,10 @@ from app.models import *
 
 from app.routes.auth_routes import auth_bp
 
+from app.routes.admin_routes import admin_bp
+
+from app.routes.user_routes import user_bp  
+
 
 def create_app():
 
@@ -28,7 +32,8 @@ def create_app():
     ma.init_app(app)
     jwt.init_app(app)
     app.register_blueprint(auth_bp)
-
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(user_bp)
     with app.app_context():
         db.create_all()
 
