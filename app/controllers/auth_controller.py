@@ -10,6 +10,7 @@ from flask_jwt_extended import (
 from app.extensions.extensions import db
 
 from app.models.user import User
+from app.models.role import Role
 
 from app.schemas.user_schema import (
     UserRegisterSchema
@@ -56,6 +57,19 @@ def register_user():
                 status_code=400
             )
 
+        role_name = validated_data["role"]
+
+        role = Role.query.filter_by(
+            name=role_name
+        ).first()
+
+        if not role:
+
+            return error_response(
+                message="Role not found",
+                status_code=404
+            )
+
         hashed_password = hash_password(
             validated_data["password"]
         )
@@ -63,7 +77,8 @@ def register_user():
         new_user = User(
             full_name=validated_data["full_name"],
             email=validated_data["email"],
-            password_hash=hashed_password
+            password_hash=hashed_password,
+            role=role
         )
 
         db.session.add(new_user)
@@ -76,7 +91,8 @@ def register_user():
                 "user": {
                     "id": new_user.id,
                     "full_name": new_user.full_name,
-                    "email": new_user.email
+                    "email": new_user.email,
+                    "role": new_user.role.name
                 }
             },
             status_code=201
@@ -133,7 +149,10 @@ def login_user():
             )
 
         access_token = create_access_token(
-            identity=str(user.id)
+            identity=str(user.id),
+            additional_claims={
+                "role": user.role.name
+            }
         )
 
         return success_response(
@@ -143,7 +162,8 @@ def login_user():
                 "user": {
                     "id": user.id,
                     "full_name": user.full_name,
-                    "email": user.email
+                    "email": user.email,
+                    "role": user.role.name
                 }
             },
             status_code=200

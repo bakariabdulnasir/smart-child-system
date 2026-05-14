@@ -7,18 +7,22 @@ from marshmallow import (
 )
 
 
-class UserRegisterSchema(Schema):
+class UpdateProfileSchema(Schema):
 
     full_name = fields.String(
-        required=True,
         validate=validate.Length(min=3)
     )
 
-    email = fields.Email(
+    email = fields.Email()
+
+
+class ChangePasswordSchema(Schema):
+
+    current_password = fields.String(
         required=True
     )
 
-    password = fields.String(
+    new_password = fields.String(
         required=True,
         validate=validate.Length(min=6)
     )
@@ -27,17 +31,10 @@ class UserRegisterSchema(Schema):
         required=True
     )
 
-    role = fields.String(
-        validate=validate.OneOf(
-            ["parent", "caregiver", "admin"]
-        ),
-        load_default="parent"
-    )
-
     @validates_schema
     def validate_passwords(self, data, **kwargs):
 
-        if data["password"] != data["confirm_password"]:
+        if data["new_password"] != data["confirm_password"]:
 
             raise ValidationError(
                 "Passwords do not match",
