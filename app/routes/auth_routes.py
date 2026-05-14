@@ -6,7 +6,9 @@ from app.controllers.auth_controller import (
     register_user,
     login_user,
     logout_user,
-    protected_route
+    protected_route,
+    forgot_password,
+    reset_password
 )
 
 
@@ -31,6 +33,22 @@ auth_bp.route(
     "/login",
     methods=["POST"]
 )(login_user)
+
+
+# FORGOT PASSWORD
+
+auth_bp.route(
+    "/forgot-password",
+    methods=["POST"]
+)(forgot_password)
+
+
+# RESET PASSWORD
+
+auth_bp.route(
+    "/reset-password",
+    methods=["POST"]
+)(reset_password)
 
 
 # LOGOUT
