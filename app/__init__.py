@@ -21,6 +21,8 @@ from app.routes.user_routes import user_bp
 
 from app.routes.child_routes import child_bp
 
+from app.routes.task_routes import task_bp
+
 
 def create_app():
 
@@ -40,6 +42,7 @@ def create_app():
     child_bp,
     url_prefix="/api"
 )
+    app.register_blueprint(task_bp, url_prefix="/api")
     with app.app_context():
         db.create_all()
 
