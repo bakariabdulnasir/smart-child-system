@@ -12,14 +12,24 @@ class Reminder(db.Model):
         primary_key=True
     )
 
-    message = db.Column(
-        db.String(255),
+    title = db.Column(
+        db.String(150),
         nullable=False
     )
 
-    remind_at = db.Column(
+    message = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    reminder_time = db.Column(
         db.DateTime,
         nullable=False
+    )
+
+    is_sent = db.Column(
+        db.Boolean,
+        default=False
     )
 
     created_at = db.Column(
@@ -37,3 +47,7 @@ class Reminder(db.Model):
         "User",
         back_populates="reminders"
     )
+
+    def __repr__(self):
+
+        return f"<Reminder {self.title}>"
