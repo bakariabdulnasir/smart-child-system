@@ -25,6 +25,8 @@ from app.routes.task_routes import task_bp
 
 from app.routes.schedule_routes import schedule_bp
 
+from app.routes.reminder_routes import reminder_bp
+
 
 def create_app():
 
@@ -46,6 +48,7 @@ def create_app():
 )
     app.register_blueprint(schedule_bp, url_prefix="/api")
     app.register_blueprint(task_bp, url_prefix="/api")
+    app.register_blueprint(reminder_bp, url_prefix="/api")
     with app.app_context():
         db.create_all()
 
