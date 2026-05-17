@@ -27,6 +27,8 @@ from app.routes.schedule_routes import schedule_bp
 
 from app.routes.reminder_routes import reminder_bp
 
+from app.routes.notification_routes import notification_bp  
+
 
 def create_app():
 
@@ -42,6 +44,7 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_bp)
+    app.register_blueprint(notification_bp, url_prefix="/api")
     app.register_blueprint(
     child_bp,
     url_prefix="/api"
