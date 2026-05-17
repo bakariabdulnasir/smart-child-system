@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from app.extensions.extensions import db
 
 
@@ -11,17 +13,38 @@ class Task(db.Model):
     )
 
     title = db.Column(
-        db.String(255),
+        db.String(150),
         nullable=False
     )
 
     description = db.Column(
-        db.Text
+        db.Text,
+        nullable=True
     )
 
-    completed = db.Column(
-        db.Boolean,
-        default=False
+    status = db.Column(
+        db.String(50),
+        default="pending"
+    )
+
+    priority = db.Column(
+        db.String(50),
+        default="medium"
+    )
+
+    due_date = db.Column(
+        db.Date,
+        nullable=True
+    )
+
+    completed_at = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
     )
 
     child_id = db.Column(
