@@ -13,12 +13,13 @@ class Schedule(db.Model):
     )
 
     title = db.Column(
-        db.String(255),
+        db.String(150),
         nullable=False
     )
 
     description = db.Column(
-        db.Text
+        db.Text,
+        nullable=True
     )
 
     start_time = db.Column(
