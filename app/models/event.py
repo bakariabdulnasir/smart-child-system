@@ -21,6 +21,11 @@ class Event(db.Model):
         db.Text
     )
 
+    location = db.Column(
+    db.String(255),
+    nullable=False
+    )
+
     event_date = db.Column(
         db.DateTime,
         nullable=False
