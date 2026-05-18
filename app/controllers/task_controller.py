@@ -97,46 +97,106 @@ def create_task():
 
 # GET ALL TASKS
 
+from flask import request
+
 def get_tasks():
-
     try:
+        page = request.args.get(
+            "page",
+            1,
+            type=int
+        )
 
-        current_user_id = get_jwt_identity()
+        per_page = request.args.get(
+            "per_page",
+            10,
+            type=int
+        )
 
-        tasks = Task.query.join(Child).filter(
-            Child.parent_id == current_user_id
-        ).all()
+        search = request.args.get(
+            "search"
+        )
+
+        status = request.args.get(
+            "status"
+        )
+
+        priority = request.args.get(
+            "priority"
+        )
+
+        sort = request.args.get(
+            "sort",
+            "desc"
+        )
+
+        query = Task.query
+
+        if search:
+            query = query.filter(
+                Task.title.ilike(
+                    f"%{search}%"
+                )
+            )
+
+        if status:
+            query = query.filter(
+                Task.status == status
+            )
+
+        if priority:
+            query = query.filter(
+                Task.priority == priority
+            )
+
+        if sort == "asc":
+            query = query.order_by(
+                Task.created_at.asc()
+            )
+        else:
+            query = query.order_by(
+                Task.created_at.desc()
+            )
+
+        paginated_tasks = query.paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
 
         tasks_data = []
 
-        for task in tasks:
-
+        for task in paginated_tasks.items:
             tasks_data.append({
                 "id": task.id,
                 "title": task.title,
                 "description": task.description,
                 "status": task.status,
                 "priority": task.priority,
+                "due_date": str(task.due_date),
                 "child_id": task.child_id
             })
 
         return success_response(
             message="Tasks retrieved successfully",
             data={
-                "tasks": tasks_data
+                "tasks": tasks_data,
+                "pagination": {
+                    "page": paginated_tasks.page,
+                    "pages": paginated_tasks.pages,
+                    "total": paginated_tasks.total,
+                    "per_page": paginated_tasks.per_page
+                }
             },
             status_code=200
         )
 
     except Exception as e:
-
         return error_response(
             message="Failed to retrieve tasks",
             errors=str(e),
             status_code=500
         )
-
-
 # GET SINGLE TASK
 
 def get_task(task_id):

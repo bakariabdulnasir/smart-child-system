@@ -95,39 +95,74 @@ def create_support_request():
 
 # GET ALL SUPPORT REQUESTS
 
+from flask import request
+
 def get_support_requests():
-
     try:
+        page = request.args.get(
+            "page",
+            1,
+            type=int
+        )
 
-        support_requests = SupportRequest.query.order_by(
-            SupportRequest.created_at.desc()
-        ).all()
+        per_page = request.args.get(
+            "per_page",
+            10,
+            type=int
+        )
+
+        status = request.args.get(
+            "status"
+        )
+
+        search = request.args.get(
+            "search"
+        )
+
+        query = SupportRequest.query
+
+        if status:
+            query = query.filter(
+                SupportRequest.status == status
+            )
+
+        if search:
+            query = query.filter(
+                SupportRequest.title.ilike(
+                    f"%{search}%"
+                )
+            )
+
+        paginated_requests = query.paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
 
         requests_data = []
 
-        for support_request in support_requests:
-
+        for support_request in paginated_requests.items:
             requests_data.append({
                 "id": support_request.id,
                 "title": support_request.title,
-                "description": support_request.description,
-                "request_type": support_request.request_type,
-                "location": support_request.location,
                 "status": support_request.status,
-                "needed_at": support_request.needed_at,
-                "user_id": support_request.user_id
+                "location": support_request.location
             })
 
         return success_response(
             message="Support requests retrieved successfully",
             data={
-                "support_requests": requests_data
+                "support_requests": requests_data,
+                "pagination": {
+                    "page": paginated_requests.page,
+                    "pages": paginated_requests.pages,
+                    "total": paginated_requests.total
+                }
             },
             status_code=200
         )
 
     except Exception as e:
-
         return error_response(
             message="Failed to retrieve support requests",
             errors=str(e),
