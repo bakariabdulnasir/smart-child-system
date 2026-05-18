@@ -95,6 +95,13 @@ class User(db.Model):
         cascade="all, delete"
     )
 
+
+    trusted_contacts = db.relationship(
+    "TrustedContact",
+    back_populates="user",
+    cascade="all, delete"
+)
+
     def __repr__(self):
 
         return f"<User {self.email}>"

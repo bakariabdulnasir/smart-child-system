@@ -8,3 +8,4 @@ from app.models.schedule import Schedule
 from app.models.reminder import Reminder
 from app.models.event import Event
 from app.models.notification import Notification
+from app.models.trusted_contact import TrustedContact   
