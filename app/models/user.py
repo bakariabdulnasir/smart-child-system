@@ -101,6 +101,13 @@ class User(db.Model):
     back_populates="user",
     cascade="all, delete"
 )
+    
+
+    support_requests = db.relationship(
+    "SupportRequest",
+    back_populates="user",
+    cascade="all, delete"
+)
 
     def __repr__(self):
 

@@ -9,3 +9,5 @@ from app.models.reminder import Reminder
 from app.models.event import Event
 from app.models.notification import Notification
 from app.models.trusted_contact import TrustedContact   
+from app.models.support_request import SupportRequest
+from app.models.support_response import SupportResponse
