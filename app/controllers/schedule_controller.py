@@ -100,44 +100,71 @@ def create_schedule():
 
 # GET ALL SCHEDULES
 
+from flask import request
+
 def get_schedules():
-
     try:
+        page = request.args.get(
+            "page",
+            1,
+            type=int
+        )
 
-        current_user_id = get_jwt_identity()
+        per_page = request.args.get(
+            "per_page",
+            10,
+            type=int
+        )
 
-        schedules = Schedule.query.filter_by(
-            user_id=current_user_id
-        ).all()
+        date = request.args.get(
+            "date"
+        )
+
+        query = Schedule.query
+
+        if date:
+            query = query.filter(
+                Schedule.start_time.like(
+                    f"{date}%"
+                )
+            )
+
+        paginated_schedules = query.paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
 
         schedules_data = []
 
-        for schedule in schedules:
-
+        for schedule in paginated_schedules.items:
             schedules_data.append({
                 "id": schedule.id,
                 "title": schedule.title,
                 "description": schedule.description,
-                "start_time": schedule.start_time,
-                "end_time": schedule.end_time,
-                "child_id": schedule.child_id
+                "start_time": str(schedule.start_time),
+                "end_time": str(schedule.end_time)
             })
 
         return success_response(
             message="Schedules retrieved successfully",
             data={
-                "schedules": schedules_data
+                "schedules": schedules_data,
+                "pagination": {
+                    "page": paginated_schedules.page,
+                    "pages": paginated_schedules.pages,
+                    "total": paginated_schedules.total
+                }
             },
             status_code=200
         )
 
     except Exception as e:
-
         return error_response(
             message="Failed to retrieve schedules",
             errors=str(e),
             status_code=500
-        )
+        )      
 
 
 # GET SINGLE SCHEDULE

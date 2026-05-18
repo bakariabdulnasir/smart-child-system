@@ -74,43 +74,70 @@ def create_reminder():
 
 # GET ALL REMINDERS
 
+from flask import request
+
 def get_reminders():
-
     try:
+        page = request.args.get(
+            "page",
+            1,
+            type=int
+        )
 
-        current_user_id = get_jwt_identity()
+        per_page = request.args.get(
+            "per_page",
+            10,
+            type=int
+        )
 
-        reminders = Reminder.query.filter_by(
-            user_id=current_user_id
-        ).all()
+        is_sent = request.args.get(
+            "is_sent"
+        )
+
+        query = Reminder.query
+
+        if is_sent:
+            query = query.filter(
+                Reminder.is_sent == (
+                    is_sent.lower() == "true"
+                )
+            )
+
+        paginated_reminders = query.paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
 
         reminders_data = []
 
-        for reminder in reminders:
-
+        for reminder in paginated_reminders.items:
             reminders_data.append({
                 "id": reminder.id,
                 "title": reminder.title,
                 "message": reminder.message,
-                "reminder_time": reminder.reminder_time,
                 "is_sent": reminder.is_sent
             })
 
         return success_response(
             message="Reminders retrieved successfully",
             data={
-                "reminders": reminders_data
+                "reminders": reminders_data,
+                "pagination": {
+                    "page": paginated_reminders.page,
+                    "pages": paginated_reminders.pages,
+                    "total": paginated_reminders.total
+                }
             },
             status_code=200
         )
 
     except Exception as e:
-
         return error_response(
             message="Failed to retrieve reminders",
             errors=str(e),
             status_code=500
-        )
+        ) 
 
 
 # GET SINGLE REMINDER

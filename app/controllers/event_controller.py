@@ -60,28 +60,87 @@ def create_event():
         )
 
 
-@jwt_required()
+from flask import request
+
 def get_events():
     try:
+        page = request.args.get(
+            "page",
+            1,
+            type=int
+        )
 
-        current_user_id = get_jwt_identity()
+        per_page = request.args.get(
+            "per_page",
+            10,
+            type=int
+        )
 
-        events = Event.query.filter_by(
-            user_id=current_user_id
-        ).all()
+        search = request.args.get(
+            "search"
+        )
+
+        sort = request.args.get(
+            "sort",
+            "desc"
+        )
+
+        query = Event.query
+
+        if search:
+            query = query.filter(
+                Event.title.ilike(
+                    f"%{search}%"
+                )
+            )
+
+        if sort == "asc":
+            query = query.order_by(
+                Event.created_at.asc()
+            )
+        else:
+            query = query.order_by(
+                Event.created_at.desc()
+            )
+
+        paginated_events = query.paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
+
+        events_data = []
+
+        for event in paginated_events.items:
+            events_data.append({
+                "id": event.id,
+                "title": event.title,
+                "description": event.description,
+                "location": event.location,
+                "event_date": str(event.event_date)
+            })
 
         return success_response(
-            message="Events fetched successfully",
-            status_code=200,
-            data=events_schema.dump(events)
+            message="Events retrieved successfully",
+            data={
+                "events": events_data,
+                "pagination": {
+                    "page": paginated_events.page,
+                    "pages": paginated_events.pages,
+                    "total": paginated_events.total
+                }
+            },
+            status_code=200
         )
 
     except Exception as e:
         return error_response(
-            message="Fetching events failed",
-            status_code=500,
-            errors=str(e)
+            message="Failed to retrieve events",
+            errors=str(e),
+            status_code=500
         )
+
+
 
 
 @jwt_required()
