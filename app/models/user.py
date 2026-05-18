@@ -108,6 +108,11 @@ class User(db.Model):
     back_populates="user",
     cascade="all, delete"
 )
+    
+    profile_image = db.Column(
+    db.String(255),
+    nullable=True
+)
 
     def __repr__(self):
 

@@ -38,6 +38,9 @@ from app.routes.trusted_contact_routes import trusted_contact_bp
 from app.routes.community_support_routes import (
     community_support_bp
 )   
+from app.routes.file_upload_routes import file_upload_bp    
+
+from flask import send_from_directory
 
 
 
@@ -59,6 +62,7 @@ def create_app():
     app.register_blueprint(trusted_contact_bp, url_prefix="/api") 
     app.register_blueprint(community_support_bp, url_prefix="/api")     
     app.register_blueprint(notification_bp, url_prefix="/api")
+    app.register_blueprint(file_upload_bp, url_prefix="/api")
     app.register_blueprint(
     child_bp,
     url_prefix="/api"
@@ -67,6 +71,17 @@ def create_app():
     app.register_blueprint(task_bp, url_prefix="/api")
     app.register_blueprint(reminder_bp, url_prefix="/api")
     app.register_blueprint(event_bp, url_prefix="/api")
+
+    @app.route(
+        "/uploads/<path:filename>"
+    )
+    def uploaded_file(filename):
+
+        return send_from_directory(
+            app.config["UPLOAD_FOLDER"],
+            filename
+        )
+
     with app.app_context():
         db.create_all()
 

@@ -48,6 +48,12 @@ class Child(db.Model):
         cascade="all, delete"
     )
 
+
+    profile_image = db.Column(
+    db.String(255),
+    nullable=True
+)
+
     def __repr__(self):
 
         return f"<Child {self.full_name}>"
