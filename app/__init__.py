@@ -35,6 +35,10 @@ from app.routes.dashboard_routes import dashboard_bp
 
 from app.routes.trusted_contact_routes import trusted_contact_bp    
 
+from app.routes.community_support_routes import (
+    community_support_bp
+)   
+
 
 
 def create_app():
@@ -52,7 +56,8 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(dashboard_bp, url_prefix="/api")  
-    app.register_blueprint(trusted_contact_bp, url_prefix="/api")     
+    app.register_blueprint(trusted_contact_bp, url_prefix="/api") 
+    app.register_blueprint(community_support_bp, url_prefix="/api")     
     app.register_blueprint(notification_bp, url_prefix="/api")
     app.register_blueprint(
     child_bp,
