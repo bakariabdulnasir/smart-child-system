@@ -71,7 +71,7 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_bp)
-    app.register_blueprint(dashboard_bp, url_prefix="/api")  
+    app.register_blueprint(dashboard_bp)  
     app.register_blueprint(trusted_contact_bp, url_prefix="/api") 
     app.register_blueprint(community_support_bp, url_prefix="/api")     
     app.register_blueprint(notification_bp, url_prefix="/api")
