@@ -44,11 +44,22 @@ from flask import send_from_directory
 
 from app.routes.location_routes import location_bp
 
+from flask_cors import CORS 
+
 
 
 def create_app():
 
     app = Flask(__name__)
+    CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": "http://localhost:3000"
+        }
+    },
+    supports_credentials=True
+)
 
     app.config.from_object(Config)
 

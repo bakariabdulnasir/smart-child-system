@@ -1,0 +1,32 @@
+{
+  "name": "smart-child-system",
+  "version": "1.0.0",
+  "description": "Smart Child is a Flask-based childcare management system that helps parents manage schedules, children profiles, reminders, trusted contacts, and shared responsibilities through a secure and organized platform.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+ "scripts": {
+
+  "backend": "bash -c 'source venv/bin/activate && python run.py'",
+
+  "frontend": "cd frontend && npm start",
+
+  "dev": "concurrently -n BACKEND,FRONTEND -c green,blue \"npm run backend\" \"npm run frontend\""
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bakariabdulnasir/smart-child-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bakariabdulnasir/smart-child-system/issues"
+  },
+  "homepage": "https://github.com/bakariabdulnasir/smart-child-system#readme",
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
