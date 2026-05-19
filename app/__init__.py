@@ -42,6 +42,8 @@ from app.routes.file_upload_routes import file_upload_bp
 
 from flask import send_from_directory
 
+from app.routes.location_routes import location_bp
+
 
 
 def create_app():
@@ -62,6 +64,7 @@ def create_app():
     app.register_blueprint(trusted_contact_bp, url_prefix="/api") 
     app.register_blueprint(community_support_bp, url_prefix="/api")     
     app.register_blueprint(notification_bp, url_prefix="/api")
+    app.register_blueprint(location_bp, url_prefix="/api")
     app.register_blueprint(file_upload_bp, url_prefix="/api")
     app.register_blueprint(
     child_bp,
