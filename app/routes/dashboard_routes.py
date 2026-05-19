@@ -1,23 +1,17 @@
 from flask import Blueprint
 
-from flask_jwt_extended import (
-    jwt_required
-)
-
 from app.controllers.dashboard_controller import (
-    get_dashboard
+    dashboard_summary
 )
-
 
 dashboard_bp = Blueprint(
-    "dashboard_bp",
-    __name__
+    "dashboard",
+    __name__,
+    url_prefix="/api/dashboard"
 )
 
 
 dashboard_bp.route(
-    "/dashboard",
+    "/summary",
     methods=["GET"]
-)(
-    jwt_required()(get_dashboard)
-)
+)(dashboard_summary)

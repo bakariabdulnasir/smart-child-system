@@ -1,146 +1,328 @@
-from datetime import datetime
+from flask import jsonify
 
 from flask_jwt_extended import (
+    jwt_required,
     get_jwt_identity
 )
 
 from app.models.child import Child
 from app.models.task import Task
+from app.models.event import Event
 from app.models.schedule import Schedule
 from app.models.reminder import Reminder
 from app.models.notification import Notification
-from app.models.event import Event
-
-from app.utils.response import (
-    success_response,
-    error_response
-)
+from app.models.trusted_contact import TrustedContact
 
 
-def get_dashboard():
+@jwt_required()
+def dashboard_summary():
 
+    current_user_id = get_jwt_identity()
+
+
+    # =====================================
+    # CHILDREN
+    # =====================================
+    children = Child.query.filter_by(
+        parent_id=current_user_id
+    ).all()
+
+    children_ids = [
+        child.id
+        for child in children
+    ]
+
+
+    # =====================================
+    # TASKS
+    # =====================================
+    tasks = []
+
+    if children_ids:
+
+        tasks = Task.query.filter(
+            Task.child_id.in_(children_ids)
+        ).all()
+
+
+    pending_tasks = [
+
+        task
+
+        for task in tasks
+
+        if hasattr(task, "status")
+        and task.status == "pending"
+    ]
+
+
+    # =====================================
+    # EVENTS
+    # =====================================
     try:
 
-        current_user_id = get_jwt_identity()
+        events = Event.query.all()
 
-        # CHILDREN
+    except Exception:
 
-        total_children = Child.query.filter_by(
-            parent_id=current_user_id
-        ).count()
+        events = []
 
-        # TASKS
 
-        user_tasks = Task.query.join(Child).filter(
-            Child.parent_id == current_user_id
-        )
+    # =====================================
+    # SCHEDULES
+    # =====================================
+    try:
 
-        total_tasks = user_tasks.count()
+        schedules = Schedule.query.all()
 
-        pending_tasks = user_tasks.filter(
-            Task.status == "pending"
-        ).count()
+    except Exception:
 
-        completed_tasks = user_tasks.filter(
-            Task.status == "completed"
-        ).count()
+        schedules = []
 
-        # SCHEDULES
 
-        total_schedules = Schedule.query.filter_by(
-            user_id=current_user_id
-        ).count()
+    # =====================================
+    # REMINDERS
+    # =====================================
+    try:
 
-        recent_schedules = Schedule.query.filter_by(
-            user_id=current_user_id
-        ).order_by(
-            Schedule.start_time.asc()
-        ).limit(5).all()
+        reminders = Reminder.query.all()
 
-        schedules_data = []
+    except Exception:
 
-        for schedule in recent_schedules:
+        reminders = []
 
-            schedules_data.append({
-                "id": schedule.id,
-                "title": schedule.title,
-                "start_time": schedule.start_time,
-                "end_time": schedule.end_time
-            })
 
-        # REMINDERS
+    # =====================================
+    # NOTIFICATIONS
+    # =====================================
+    try:
 
-        total_reminders = Reminder.query.filter_by(
-            user_id=current_user_id
-        ).count()
+        notifications = Notification.query.all()
 
-        upcoming_reminders = Reminder.query.filter(
-            Reminder.user_id == current_user_id,
-            Reminder.reminder_time >= datetime.utcnow()
-        ).order_by(
-            Reminder.reminder_time.asc()
-        ).limit(5).all()
+    except Exception:
 
-        reminders_data = []
+        notifications = []
 
-        for reminder in upcoming_reminders:
 
-            reminders_data.append({
-                "id": reminder.id,
-                "title": reminder.title,
-                "reminder_time": reminder.reminder_time
-            })
+    # =====================================
+    # TRUSTED CONTACTS
+    # =====================================
+    try:
 
-        # NOTIFICATIONS
+        contacts = TrustedContact.query.all()
 
-        unread_notifications = Notification.query.filter_by(
-            user_id=current_user_id,
-            is_read=False
-        ).count()
+    except Exception:
 
-        # EVENTS
+        contacts = []
 
-        upcoming_events = Event.query.filter(
-            Event.user_id == current_user_id,
-            Event.event_date >= datetime.utcnow()
-        ).order_by(
-            Event.event_date.asc()
-        ).limit(5).all()
 
-        events_data = []
+    # =====================================
+    # RECENT TASKS
+    # =====================================
+    recent_tasks = sorted(
 
-        for event in upcoming_events:
+        tasks,
 
-            events_data.append({
-                "id": event.id,
-                "title": event.title,
-                "location": event.location,
-                "event_date": event.event_date
-            })
+        key=lambda x:
+        x.created_at
+        if hasattr(x, "created_at")
+        else 0,
 
-        return success_response(
-            message="Dashboard retrieved successfully",
-            data={
-                "dashboard": {
-                    "total_children": total_children,
-                    "total_tasks": total_tasks,
-                    "pending_tasks": pending_tasks,
-                    "completed_tasks": completed_tasks,
-                    "total_schedules": total_schedules,
-                    "total_reminders": total_reminders,
-                    "unread_notifications": unread_notifications,
-                    "recent_schedules": schedules_data,
-                    "upcoming_reminders": reminders_data,
-                    "upcoming_events": events_data
-                }
+        reverse=True
+
+    )[:5]
+
+
+    # =====================================
+    # UPCOMING EVENTS
+    # =====================================
+    upcoming_events = events[:5]
+
+
+    # =====================================
+    # RECENT NOTIFICATIONS
+    # =====================================
+    recent_notifications = notifications[:5]
+
+
+    # =====================================
+    # RESPONSE
+    # =====================================
+    return jsonify({
+
+        "success": True,
+
+        "message":
+        "Dashboard summary retrieved successfully",
+
+        "data": {
+
+            # =================================
+            # COUNTS
+            # =================================
+            "counts": {
+
+                "children":
+                len(children),
+
+                "tasks":
+                len(tasks),
+
+                "pending_tasks":
+                len(pending_tasks),
+
+                "events":
+                len(events),
+
+                "schedules":
+                len(schedules),
+
+                "reminders":
+                len(reminders),
+
+                "contacts":
+                len(contacts),
+
+                "notifications":
+                len(notifications),
             },
-            status_code=200
-        )
 
-    except Exception as e:
 
-        return error_response(
-            message="Failed to retrieve dashboard",
-            errors=str(e),
-            status_code=500
-        )
+            # =================================
+            # CHILDREN
+            # =================================
+            "children": [
+
+                {
+                    "id":
+                    child.id,
+
+                    "name":
+                    child.name
+                    if hasattr(child, "name")
+                    else "",
+
+                    "age":
+                    child.age
+                    if hasattr(child, "age")
+                    else "",
+
+                    "medical_notes":
+                    child.medical_notes
+                    if hasattr(child, "medical_notes")
+                    else ""
+                }
+
+                for child in children
+            ],
+
+
+            # =================================
+            # RECENT TASKS
+            # =================================
+            "recent_tasks": [
+
+                {
+                    "id":
+                    task.id,
+
+                    "title":
+                    task.title
+                    if hasattr(task, "title")
+                    else "",
+
+                    "status":
+                    task.status
+                    if hasattr(task, "status")
+                    else "",
+
+                    "priority":
+                    task.priority
+                    if hasattr(task, "priority")
+                    else ""
+                }
+
+                for task in recent_tasks
+            ],
+
+
+            # =================================
+            # UPCOMING EVENTS
+            # =================================
+            "upcoming_events": [
+
+                {
+                    "id":
+                    event.id
+                    if hasattr(event, "id")
+                    else "",
+
+                    "title":
+                    event.title
+                    if hasattr(event, "title")
+                    else "",
+
+                    "datetime":
+                    str(event.datetime)
+                    if hasattr(event, "datetime")
+                    else "",
+
+                    "location":
+                    event.location
+                    if hasattr(event, "location")
+                    else ""
+                }
+
+                for event in upcoming_events
+            ],
+
+
+            # =================================
+            # RECENT NOTIFICATIONS
+            # =================================
+            "recent_notifications": [
+
+                {
+                    "id":
+                    notification.id
+                    if hasattr(notification, "id")
+                    else "",
+
+                    "message":
+                    notification.message
+                    if hasattr(notification, "message")
+                    else ""
+                }
+
+                for notification
+                in recent_notifications
+            ],
+
+
+            # =================================
+            # TRUSTED CONTACTS
+            # =================================
+            "trusted_contacts": [
+
+                {
+                    "id":
+                    contact.id
+                    if hasattr(contact, "id")
+                    else "",
+
+                    "name":
+                    contact.name
+                    if hasattr(contact, "name")
+                    else "",
+
+                    "phone":
+                    contact.phone
+                    if hasattr(contact, "phone")
+                    else ""
+                }
+
+                for contact in contacts
+            ]
+        }
+
+    }), 200
