@@ -14,6 +14,7 @@ import Family from './pages/Family';
 import ChildDetail from './pages/ChildDetail';
 import AdminDashboard from './pages/AdminDashboard';
 import Amenities from './pages/Amenities';
+import ParentSchedulePage from './pages/ParentSchedulePage';
 
 function App() {
   return (
@@ -21,6 +22,14 @@ function App() {
       <AuthProvider>
         <ChildrenProvider>
         <Routes>
+          <Route 
+  path="/schedule"
+  element={
+    <ProtectedRoute>
+      <ParentSchedulePage />
+    </ProtectedRoute>
+  }
+/>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
