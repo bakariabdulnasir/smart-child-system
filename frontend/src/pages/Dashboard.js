@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { apiFetch } from "../services/api";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -217,7 +218,7 @@ const {
             <h1 className="text-2xl font-bold text-indigo-600">Smart Child</h1>
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
               <button className="text-indigo-600">Dashboard</button>
-              <button className="text-gray-500 hover:text-indigo-600">Schedule</button>
+              <Link to="/schedule" className="text-gray-500 hover:text-indigo-600">Schedule</Link>
               <button className="text-gray-500 hover:text-indigo-600">Tasks</button>
               <button className="text-gray-500 hover:text-indigo-600">Family</button>
             </div>
