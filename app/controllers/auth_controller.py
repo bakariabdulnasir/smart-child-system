@@ -59,16 +59,20 @@ def register_user():
                 status_code=400
             )
 
-        role_name = validated_data["role"]
+# Use default role if not provided
+        role_name = validated_data.get("role", "parent")
 
         role = Role.query.filter_by(
             name=role_name
         ).first()
 
+        # If role not found, use parent as default
         if not role:
-
+            role = Role.query.filter_by(name="parent").first()
+            
+        if not role:
             return error_response(
-                message="Role not found",
+                message="Default role not found",
                 status_code=404
             )
 
@@ -298,3 +302,40 @@ def logout_user():
         message="Logout successful",
         status_code=200
     )
+
+
+# VALIDATE TOKEN
+
+def validate_token():
+
+    try:
+
+        current_user_id = get_jwt_identity()
+
+        user = User.query.get(int(current_user_id))
+
+        if not user:
+
+            return error_response(
+                message="User not found",
+                status_code=404
+            )
+
+        return success_response(
+            message="Token valid",
+            data={
+                "id": user.id,
+                "full_name": user.full_name,
+                "email": user.email,
+                "role": user.role.name
+            },
+            status_code=200
+        )
+
+    except Exception as e:
+
+        return error_response(
+            message="Token validation failed",
+            errors=str(e),
+            status_code=401
+        )

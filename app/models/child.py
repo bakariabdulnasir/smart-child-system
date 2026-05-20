@@ -48,11 +48,46 @@ class Child(db.Model):
         cascade="all, delete"
     )
 
-
     profile_image = db.Column(
-    db.String(255),
-    nullable=True
-)
+        db.String(255),
+        nullable=True
+    )
+
+    school = db.Column(
+        db.String(200),
+        nullable=True
+    )
+
+    medical_notes = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    allergies = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    emergency_contact = db.Column(
+        db.String(150),
+        nullable=True
+    )
+
+    emergency_phone = db.Column(
+        db.String(50),
+        nullable=True
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=db.func.current_timestamp()
+    )
+
+    updated_at = db.Column(
+        db.DateTime,
+        default=db.func.current_timestamp(),
+        onupdate=db.func.current_timestamp()
+    )
 
     def __repr__(self):
 

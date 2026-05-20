@@ -3,8 +3,11 @@ import os
 
 class Config:
 
+    # Use absolute path based on the app directory
+    DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../instance/smart_child.db'))
+    
     SQLALCHEMY_DATABASE_URI = (
-        "sqlite:///smart_child.db"
+        f"sqlite:///{DB_PATH}"
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False

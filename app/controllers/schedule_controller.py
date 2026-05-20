@@ -100,10 +100,10 @@ def create_schedule():
 
 # GET ALL SCHEDULES
 
-from flask import request
-
 def get_schedules():
     try:
+        current_user_id = get_jwt_identity()
+        
         page = request.args.get(
             "page",
             1,
@@ -120,7 +120,8 @@ def get_schedules():
             "date"
         )
 
-        query = Schedule.query
+        # Filter by current user to ensure privacy
+        query = Schedule.query.filter_by(user_id=current_user_id)
 
         if date:
             query = query.filter(
@@ -138,12 +139,17 @@ def get_schedules():
         schedules_data = []
 
         for schedule in paginated_schedules.items:
+            # Get child's name for the schedule
+            child_name = schedule.child.full_name if schedule.child else "Unknown"
+            
             schedules_data.append({
                 "id": schedule.id,
                 "title": schedule.title,
                 "description": schedule.description,
                 "start_time": str(schedule.start_time),
-                "end_time": str(schedule.end_time)
+                "end_time": str(schedule.end_time),
+                "child_id": schedule.child_id,
+                "child_name": child_name
             })
 
         return success_response(

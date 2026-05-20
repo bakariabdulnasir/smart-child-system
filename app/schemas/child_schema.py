@@ -17,3 +17,33 @@ class ChildSchema(Schema):
             "female"
         ])
     )
+
+    profile_image = fields.String(
+        required=False,
+        allow_none=True
+    )
+
+    school = fields.String(
+        required=False,
+        allow_none=True
+    )
+
+    medical_notes = fields.String(
+        required=False,
+        allow_none=True
+    )
+
+    allergies = fields.String(
+        required=False,
+        allow_none=True
+    )
+
+    emergency_contact = fields.String(
+        required=False,
+        allow_none=True
+    )
+
+    emergency_phone = fields.String(
+        required=False,
+        allow_none=True
+    )

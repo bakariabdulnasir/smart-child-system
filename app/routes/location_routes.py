@@ -1,7 +1,8 @@
 from flask import Blueprint
 
 from flask_jwt_extended import (
-    jwt_required
+    jwt_required,
+    get_jwt_identity
 )
 
 from app.controllers.location_controller import (
@@ -15,9 +16,8 @@ location_bp = Blueprint(
 )
 
 
-location_bp.route(
-    "/nearby",
-    methods=["GET"]
-)(
-    jwt_required()(get_nearby_places)
-)
+# Define the route with proper JWT decorator
+@location_bp.route("/locations/nearby", methods=["GET"])
+@jwt_required()
+def nearby_places():
+    return get_nearby_places()

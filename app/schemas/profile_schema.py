@@ -14,6 +14,8 @@ class UpdateProfileSchema(Schema):
     )
 
     email = fields.Email()
+    
+    profile_image = fields.String(allow_none=True)
 
 
 class ChangePasswordSchema(Schema):
