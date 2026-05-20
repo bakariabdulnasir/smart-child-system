@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { apiFetch } from "../services/api";
 
 const ParentSchedulePage = () => {
   return (
@@ -7,5 +8,31 @@ const ParentSchedulePage = () => {
     </div>
   );
 };
+
+const [events, setEvents] = useState([]);
+
+useEffect(() => {
+  loadEvents();
+}, []);
+
+const loadEvents = async () => {
+  const res = await apiFetch("/events");
+  const data = await res.json();
+  setEvents(data.data || []);
+};
+
+return (
+  <div>
+    {events?.length > 0 ? (
+      events.map((event) => (
+        <div key={event.id}>
+          {event.title}
+        </div>
+      ))
+    ) : (
+      <p>No events found</p>
+    )}
+  </div>
+);
 
 export default ParentSchedulePage;
