@@ -6,9 +6,10 @@ const ChildManager = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingChild, setEditingChild] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
+const [formData, setFormData] = useState({
+    full_name: '',
     age: '',
+    gender: 'male',
     school: '',
     medical_notes: '',
     allergies: '',
@@ -22,13 +23,20 @@ const ChildManager = () => {
     loadChildren();
   }, []);
 
-  const loadChildren = async () => {
+const loadChildren = async () => {
     try {
       setLoading(true);
       const res = await childAPI.getAll();
       if (res.ok) {
-        const data = await res.json();
-        setChildren(data);
+        const response = await res.json();
+        // Handle both direct array and {data: {children: []}} response formats
+        if (response.data && response.data.children) {
+          setChildren(response.data.children);
+        } else if (Array.isArray(response)) {
+          setChildren(response);
+        } else {
+          setChildren([]);
+        }
       } else {
         const err = await res.json();
         setError(err.error || 'Failed to load children');
@@ -40,13 +48,13 @@ const ChildManager = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     
-    if (!formData.name || !formData.age || !formData.school) {
-      setError('Name, age, and school are required');
+    if (!formData.full_name || !formData.age || !formData.gender) {
+      setError('Name, age, and gender are required');
       return;
     }
     
@@ -55,38 +63,53 @@ const ChildManager = () => {
       return;
     }
     
-    try {
+    // Transform frontend field names to match backend schema
+    const childData = {
+      full_name: formData.full_name,
+      age: parseInt(formData.age),
+      gender: formData.gender,
+      school: formData.school || null,
+      medical_notes: formData.medical_notes || null,
+      allergies: formData.allergies || null,
+      emergency_contact: formData.emergency_contact || null,
+      emergency_phone: formData.emergency_phone || null
+    };
+    
+try {
       let res;
       if (editingChild) {
-        res = await childAPI.update(editingChild.id, formData);
+        res = await childAPI.update(editingChild.id, childData);
       } else {
-        res = await childAPI.create(formData);
+        res = await childAPI.create(childData);
       }
       
-      if (res.ok) {
+if (res.ok) {
         setSuccess(editingChild ? 'Child updated successfully!' : 'Child added successfully!');
         setFormData({
-          name: '', age: '', school: '', medical_notes: '', allergies: '', emergency_contact: '', emergency_phone: ''
+          full_name: '', age: '', gender: 'male', school: '', medical_notes: '', allergies: '', emergency_contact: '', emergency_phone: ''
         });
         setShowForm(false);
         setEditingChild(null);
         loadChildren();
         setTimeout(() => setSuccess(''), 3000);
-      } else {
+} else {
         const data = await res.json();
-        setError(data.error || 'Failed to save child');
+        // Handle API response format {success: false, error: message}
+const errorMsg = data.message || data.error || (data.errors && JSON.stringify(data.errors)) || 'Failed to save child';
+        setError(errorMsg);
       }
     } catch (err) {
       setError('Network error');
     }
   };
 
-  const handleEdit = (child) => {
+const handleEdit = (child) => {
     setEditingChild(child);
     setFormData({
-      name: child.name,
+      full_name: child.full_name || child.name || '',
       age: child.age,
-      school: child.school,
+      gender: child.gender || 'male',
+      school: child.school || '',
       medical_notes: child.medical_notes || '',
       allergies: child.allergies || '',
       emergency_contact: child.emergency_contact || '',
@@ -95,12 +118,12 @@ const ChildManager = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (id, name) => {
-    if (window.confirm(`Are you sure you want to delete ${name}?`)) {
+const handleDelete = async (id, name) => {
+    if (window.confirm(`Are you sure you want to delete ${name || 'this child'}?`)) {
       try {
         const res = await childAPI.delete(id);
         if (res.ok) {
-          setSuccess(`${name} has been removed`);
+          setSuccess(`${name || 'Child'} has been removed`);
           loadChildren();
           setTimeout(() => setSuccess(''), 3000);
         } else {
@@ -112,11 +135,11 @@ const ChildManager = () => {
     }
   };
 
-  const cancelForm = () => {
+const cancelForm = () => {
     setShowForm(false);
     setEditingChild(null);
     setFormData({
-      name: '', age: '', school: '', medical_notes: '', allergies: '', emergency_contact: '', emergency_phone: ''
+      full_name: '', age: '', gender: 'male', school: '', medical_notes: '', allergies: '', emergency_contact: '', emergency_phone: ''
     });
     setError('');
   };
@@ -163,12 +186,12 @@ const ChildManager = () => {
             {editingChild ? 'Edit Child Profile' : 'Add New Child'}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+<div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Child's Name *</label>
               <input
                 type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                value={formData.full_name}
+                onChange={(e) => setFormData({...formData, full_name: e.target.value})}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -186,13 +209,24 @@ const ChildManager = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">School *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Gender *</label>
+              <select
+                value={formData.gender}
+                onChange={(e) => setFormData({...formData, gender: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">School</label>
               <input
                 type="text"
                 value={formData.school}
                 onChange={(e) => setFormData({...formData, school: e.target.value})}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                required
               />
             </div>
             <div>
@@ -260,7 +294,7 @@ const ChildManager = () => {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold text-lg">{child.name}</h3>
+<h3 className="font-semibold text-lg">{child.full_name || child.name}</h3>
                     <span className="text-sm text-gray-500">Age: {child.age}</span>
                     <span className="text-sm text-blue-600">{child.school}</span>
                   </div>
@@ -283,8 +317,8 @@ const ChildManager = () => {
                   >
                     Edit
                   </button>
-                  <button
-                    onClick={() => handleDelete(child.id, child.name)}
+<button
+                    onClick={() => handleDelete(child.id, child.full_name || child.name)}
                     className="text-red-500 hover:text-red-700 px-2 py-1"
                   >
                     Delete

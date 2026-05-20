@@ -8,7 +8,8 @@ from app.controllers.auth_controller import (
     logout_user,
     protected_route,
     forgot_password,
-    reset_password
+    reset_password,
+    validate_token
 )
 
 
@@ -65,3 +66,11 @@ auth_bp.route(
     "/protected",
     methods=["GET"]
 )(jwt_required()(protected_route))
+
+
+# VALIDATE TOKEN
+
+auth_bp.route(
+    "/validate",
+    methods=["POST"]
+)(jwt_required()(validate_token))

@@ -14,27 +14,69 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState(null);
 
-
-  // Restore auth on refresh
-  useEffect(() => {
-
-    const token = localStorage.getItem('token');
-
-    if (token) {
-
-      setUser({
-        authenticated: true
+  // Validate token with backend
+  const validateToken = async (token) => {
+    try {
+      const res = await apiFetch('/auth/validate', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-
+      
+      if (res.ok) {
+        const data = await res.json();
+        return { valid: true, data: data.data };
+      } else {
+        return { valid: false, data: null };
+      }
+    } catch (err) {
+      console.error('Token validation error:', err);
+      return { valid: false, data: null };
     }
+  };
 
-    setLoading(false);
+  // Restore auth on refresh with validation
+  useEffect(() => {
+    const restoreAuth = async () => {
+      const storedToken = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+      
+      if (storedToken) {
+        // Validate token with backend
+        const validation = await validateToken(storedToken);
+        
+        if (validation.valid && validation.data) {
+          setUser({
+            authenticated: true,
+            role: validation.data.role,
+            full_name: validation.data.full_name,
+            email: validation.data.email,
+            id: validation.data.id
+          });
+          localStorage.setItem('user', JSON.stringify(validation.data));
+        } else if (storedUser) {
+          const userData = JSON.parse(storedUser);
+          setUser({
+            authenticated: true,
+            role: userData.role,
+            full_name: userData.full_name,
+            email: userData.email,
+            id: userData.id,
+            sessionExpired: true
+          });
+        } else {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setUser(null);
+        }
+      }
 
+      setLoading(false);
+    };
+
+    restoreAuth();
   }, []);
 
 
@@ -44,69 +86,50 @@ export const AuthProvider = ({ children }) => {
     setError(null);
 
     try {
-
       const res = await apiFetch(
         '/auth/login',
         {
           method: 'POST',
-
-          body: JSON.stringify({
-            email,
-            password,
-          }),
+          body: JSON.stringify({ email, password }),
         }
       );
 
       const data = await res.json();
 
-      console.log(data);
-
       if (res.ok) {
-
         // Save JWT token
-        localStorage.setItem(
-          'token',
-          data.data.access_token
-        );
+        localStorage.setItem('token', data.data.access_token);
+        
+        // Also store user info for session restoration
+        localStorage.setItem('user', JSON.stringify(data.data.user));
 
-        // Save simple user session
+        // Save user session with role and full info
         setUser({
-          authenticated: true
+          authenticated: true,
+          role: data.data.user.role,
+          full_name: data.data.user.full_name,
+          email: data.data.user.email,
+          id: data.data.user.id
         });
 
-        return {
-          success: true
-        };
+        return { success: true };
       }
 
-      setError(
-        data.message || 'Login failed'
-      );
-
-      return {
-        success: false,
-        error: data.message
-      };
+      setError(data.message || 'Login failed');
+      return { success: false, error: data.message };
 
     } catch (err) {
-
       console.error(err);
-
       setError('Network error');
-
-      return {
-        success: false,
-        error: 'Network error'
-      };
+      return { success: false, error: 'Network error' };
     }
   };
 
 
-  // LOGOUT
+  // LOGOUT - Enhanced to properly clear all session data
   const logout = () => {
-
     localStorage.removeItem('token');
-
+    localStorage.removeItem('user');
     setUser(null);
   };
 
@@ -117,12 +140,10 @@ export const AuthProvider = ({ children }) => {
     setError(null);
 
     try {
-
       const res = await apiFetch(
         '/auth/register',
         {
           method: 'POST',
-
           body: JSON.stringify(userData),
         }
       );
@@ -130,31 +151,16 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (res.ok) {
-
-        return {
-          success: true
-        };
+        return { success: true };
       }
 
-      setError(
-        data.message || 'Registration failed'
-      );
-
-      return {
-        success: false,
-        error: data.message
-      };
+      setError(data.message || 'Registration failed');
+      return { success: false, error: data.message };
 
     } catch (err) {
-
       console.error(err);
-
       setError('Network error');
-
-      return {
-        success: false,
-        error: 'Network error'
-      };
+      return { success: false, error: 'Network error' };
     }
   };
 
@@ -165,12 +171,10 @@ export const AuthProvider = ({ children }) => {
     setError(null);
 
     try {
-
       const res = await apiFetch(
-        '/auth/password-reset/request',
+        '/auth/forgot-password',
         {
           method: 'POST',
-
           body: JSON.stringify({ email }),
         }
       );
@@ -178,58 +182,36 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (res.ok) {
-
         return {
           success: true,
-          message: data.message
+          message: data.message || 'Password reset link has been sent to your email'
         };
       }
 
-      setError(
-        data.message || 'Request failed'
-      );
-
-      return {
-        success: false,
-        error: data.message
-      };
+      setError(data.message || 'Request failed');
+      return { success: false, error: data.message };
 
     } catch (err) {
-
       console.error(err);
-
       setError('Network error');
-
-      return {
-        success: false,
-        error: 'Network error'
-      };
+      return { success: false, error: 'Network error' };
     }
   };
 
 
   // PASSWORD RESET CONFIRM
-  const confirmPasswordReset = async (
-    token,
-    newPassword,
-    confirmPassword
-  ) => {
+  const confirmPasswordReset = async (token, newPassword, confirmPassword) => {
 
     setError(null);
 
     try {
-
       const res = await apiFetch(
-        '/auth/password-reset/confirm',
+        '/auth/reset-password',
         {
           method: 'POST',
-
-          headers: {
-            'Reset-Token': token
-          },
-
           body: JSON.stringify({
-            new_password: newPassword,
+            token: token,
+            password: newPassword,
             confirm_password: confirmPassword,
           }),
         }
@@ -238,63 +220,39 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (res.ok) {
-
         return {
-          success: true
+          success: true,
+          message: data.message || 'Password reset successful'
         };
       }
 
-      setError(
-        data.message || 'Reset failed'
-      );
-
-      return {
-        success: false,
-        error: data.message
-      };
+      setError(data.message || 'Reset failed');
+      return { success: false, error: data.message };
 
     } catch (err) {
-
       console.error(err);
-
       setError('Network error');
-
-      return {
-        success: false,
-        error: 'Network error'
-      };
+      return { success: false, error: 'Network error' };
     }
   };
 
 
   const value = {
-
     user,
-
     loading,
-
     error,
-
     setError,
-
     login,
-
     logout,
-
     register,
-
     requestPasswordReset,
-
     confirmPasswordReset,
   };
 
 
   return (
-
     <AuthContext.Provider value={value}>
-
       {children}
-
     </AuthContext.Provider>
   );
 };

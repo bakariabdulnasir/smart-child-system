@@ -1,0 +1,739 @@
+nohup: ignoring input
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 139-707-429
+127.0.0.1 - - [20/May/2026 19:09:59] "OPTIONS /api/auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:09:59] "POST /api/auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:09:59] "OPTIONS /api/dashboard/summary HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:09:59] "[35m[1mGET /api/dashboard/summary HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: children.school
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_jwt_extended/view_decorators.py", line 170, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/app/controllers/dashboard_controller.py", line 27, in dashboard_summary
+    ).all()
+      ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: children.school
+[SQL: SELECT children.id AS children_id, children.full_name AS children_full_name, children.age AS children_age, children.gender AS children_gender, children.parent_id AS children_parent_id, children.profile_image AS children_profile_image, children.school AS children_school, children.medical_notes AS children_medical_notes, children.allergies AS children_allergies, children.emergency_contact AS children_emergency_contact, children.emergency_phone AS children_emergency_phone, children.created_at AS children_created_at, children.updated_at AS children_updated_at 
+FROM children 
+WHERE children.parent_id = ?]
+[parameters: ('15',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+127.0.0.1 - - [20/May/2026 19:10:20] "OPTIONS /api/children HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:10:20] "[35m[1mPOST /api/children HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/May/2026 19:10:21] "[35m[1mPOST /api/children HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/May/2026 19:10:21] "[35m[1mPOST /api/children HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/May/2026 19:10:23] "[35m[1mPOST /api/children HTTP/1.1[0m" 500 -
+ * Detected change in '/home/christian/moringaschool/module5/smart-child-system/app/controllers/child_controller.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 139-707-429
+ * Detected change in '/home/christian/moringaschool/module5/smart-child-system/app/controllers/child_controller.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 139-707-429
+ * Detected change in '/home/christian/moringaschool/module5/smart-child-system/app/controllers/child_controller.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 139-707-429
+ * Detected change in '/home/christian/moringaschool/module5/smart-child-system/app/controllers/child_controller.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 139-707-429
+ * Detected change in '/home/christian/moringaschool/module5/smart-child-system/app/controllers/child_controller.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 139-707-429
+127.0.0.1 - - [20/May/2026 19:17:14] "OPTIONS /api/dashboard/summary HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:17:14] "[35m[1mGET /api/dashboard/summary HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: children.school
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_jwt_extended/view_decorators.py", line 170, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/app/controllers/dashboard_controller.py", line 27, in dashboard_summary
+    ).all()
+      ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: children.school
+[SQL: SELECT children.id AS children_id, children.full_name AS children_full_name, children.age AS children_age, children.gender AS children_gender, children.parent_id AS children_parent_id, children.profile_image AS children_profile_image, children.school AS children_school, children.medical_notes AS children_medical_notes, children.allergies AS children_allergies, children.emergency_contact AS children_emergency_contact, children.emergency_phone AS children_emergency_phone, children.created_at AS children_created_at, children.updated_at AS children_updated_at 
+FROM children 
+WHERE children.parent_id = ?]
+[parameters: ('15',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+127.0.0.1 - - [20/May/2026 19:17:20] "OPTIONS /api/auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:17:21] "POST /api/auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:17:21] "OPTIONS /api/dashboard/summary HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:17:21] "[35m[1mGET /api/dashboard/summary HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: children.school
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_jwt_extended/view_decorators.py", line 170, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/app/controllers/dashboard_controller.py", line 27, in dashboard_summary
+    ).all()
+      ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: children.school
+[SQL: SELECT children.id AS children_id, children.full_name AS children_full_name, children.age AS children_age, children.gender AS children_gender, children.parent_id AS children_parent_id, children.profile_image AS children_profile_image, children.school AS children_school, children.medical_notes AS children_medical_notes, children.allergies AS children_allergies, children.emergency_contact AS children_emergency_contact, children.emergency_phone AS children_emergency_phone, children.created_at AS children_created_at, children.updated_at AS children_updated_at 
+FROM children 
+WHERE children.parent_id = ?]
+[parameters: ('15',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+127.0.0.1 - - [20/May/2026 19:17:45] "OPTIONS /api/children HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:17:45] "[35m[1mPOST /api/children HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/May/2026 19:17:47] "[35m[1mPOST /api/children HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/May/2026 19:17:47] "[35m[1mPOST /api/children HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/May/2026 19:17:47] "[35m[1mPOST /api/children HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/May/2026 19:17:47] "[35m[1mPOST /api/children HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/May/2026 19:18:36] "OPTIONS /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:18:36] "[31m[1mPOST /api/trusted-contacts HTTP/1.1[0m" 400 -
+127.0.0.1 - - [20/May/2026 19:18:38] "[31m[1mPOST /api/trusted-contacts HTTP/1.1[0m" 400 -
+127.0.0.1 - - [20/May/2026 19:18:39] "[31m[1mPOST /api/trusted-contacts HTTP/1.1[0m" 400 -
+127.0.0.1 - - [20/May/2026 19:19:11] "OPTIONS /api/schedules HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:11] "OPTIONS /api/children HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:11] "GET /api/schedules HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:11] "[35m[1mGET /api/children HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/May/2026 19:19:15] "OPTIONS /api/dashboard/summary HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:15] "[35m[1mGET /api/dashboard/summary HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: children.school
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_jwt_extended/view_decorators.py", line 170, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/app/controllers/dashboard_controller.py", line 27, in dashboard_summary
+    ).all()
+      ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: children.school
+[SQL: SELECT children.id AS children_id, children.full_name AS children_full_name, children.age AS children_age, children.gender AS children_gender, children.parent_id AS children_parent_id, children.profile_image AS children_profile_image, children.school AS children_school, children.medical_notes AS children_medical_notes, children.allergies AS children_allergies, children.emergency_contact AS children_emergency_contact, children.emergency_phone AS children_emergency_phone, children.created_at AS children_created_at, children.updated_at AS children_updated_at 
+FROM children 
+WHERE children.parent_id = ?]
+[parameters: ('15',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+127.0.0.1 - - [20/May/2026 19:19:23] "OPTIONS /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:23] "GET /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:46] "OPTIONS /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:47] "[35m[1mPOST /api/trusted-contacts HTTP/1.1[0m" 201 -
+127.0.0.1 - - [20/May/2026 19:19:47] "GET /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:54] "OPTIONS /api/dashboard/summary HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:54] "[35m[1mGET /api/dashboard/summary HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: children.school
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_jwt_extended/view_decorators.py", line 170, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/app/controllers/dashboard_controller.py", line 27, in dashboard_summary
+    ).all()
+      ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: children.school
+[SQL: SELECT children.id AS children_id, children.full_name AS children_full_name, children.age AS children_age, children.gender AS children_gender, children.parent_id AS children_parent_id, children.profile_image AS children_profile_image, children.school AS children_school, children.medical_notes AS children_medical_notes, children.allergies AS children_allergies, children.emergency_contact AS children_emergency_contact, children.emergency_phone AS children_emergency_phone, children.created_at AS children_created_at, children.updated_at AS children_updated_at 
+FROM children 
+WHERE children.parent_id = ?]
+[parameters: ('15',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+127.0.0.1 - - [20/May/2026 19:19:55] "OPTIONS /api/schedules HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:55] "OPTIONS /api/children HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:55] "[35m[1mGET /api/children HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/May/2026 19:19:55] "GET /api/schedules HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:19:57] "[35m[1mGET /api/dashboard/summary HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: children.school
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_jwt_extended/view_decorators.py", line 170, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/app/controllers/dashboard_controller.py", line 27, in dashboard_summary
+    ).all()
+      ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: children.school
+[SQL: SELECT children.id AS children_id, children.full_name AS children_full_name, children.age AS children_age, children.gender AS children_gender, children.parent_id AS children_parent_id, children.profile_image AS children_profile_image, children.school AS children_school, children.medical_notes AS children_medical_notes, children.allergies AS children_allergies, children.emergency_contact AS children_emergency_contact, children.emergency_phone AS children_emergency_phone, children.created_at AS children_created_at, children.updated_at AS children_updated_at 
+FROM children 
+WHERE children.parent_id = ?]
+[parameters: ('15',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+127.0.0.1 - - [20/May/2026 19:20:00] "OPTIONS /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:20:00] "GET /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:20:20] "OPTIONS /api/dashboard/summary HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:20:21] "[35m[1mGET /api/dashboard/summary HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: children.school
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_jwt_extended/view_decorators.py", line 170, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/app/controllers/dashboard_controller.py", line 27, in dashboard_summary
+    ).all()
+      ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: children.school
+[SQL: SELECT children.id AS children_id, children.full_name AS children_full_name, children.age AS children_age, children.gender AS children_gender, children.parent_id AS children_parent_id, children.profile_image AS children_profile_image, children.school AS children_school, children.medical_notes AS children_medical_notes, children.allergies AS children_allergies, children.emergency_contact AS children_emergency_contact, children.emergency_phone AS children_emergency_phone, children.created_at AS children_created_at, children.updated_at AS children_updated_at 
+FROM children 
+WHERE children.parent_id = ?]
+[parameters: ('15',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+127.0.0.1 - - [20/May/2026 19:20:38] "OPTIONS /api/schedules HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:20:38] "OPTIONS /api/children HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:20:38] "GET /api/schedules HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:20:38] "[35m[1mGET /api/children HTTP/1.1[0m" 500 -
+127.0.0.1 - - [20/May/2026 19:20:39] "OPTIONS /api/dashboard/summary HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:20:39] "[35m[1mGET /api/dashboard/summary HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: children.school
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/flask_jwt_extended/view_decorators.py", line 170, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/app/controllers/dashboard_controller.py", line 27, in dashboard_summary
+    ).all()
+      ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/christian/moringaschool/module5/smart-child-system/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: children.school
+[SQL: SELECT children.id AS children_id, children.full_name AS children_full_name, children.age AS children_age, children.gender AS children_gender, children.parent_id AS children_parent_id, children.profile_image AS children_profile_image, children.school AS children_school, children.medical_notes AS children_medical_notes, children.allergies AS children_allergies, children.emergency_contact AS children_emergency_contact, children.emergency_phone AS children_emergency_phone, children.created_at AS children_created_at, children.updated_at AS children_updated_at 
+FROM children 
+WHERE children.parent_id = ?]
+[parameters: ('15',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+127.0.0.1 - - [20/May/2026 19:20:44] "OPTIONS /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:20:44] "GET /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:21:02] "OPTIONS /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:21:02] "[35m[1mPOST /api/trusted-contacts HTTP/1.1[0m" 201 -
+127.0.0.1 - - [20/May/2026 19:21:02] "GET /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:23:22] "OPTIONS /api/trusted-contacts/2 HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:23:22] "DELETE /api/trusted-contacts/2 HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:23:22] "OPTIONS /api/trusted-contacts HTTP/1.1" 200 -
+127.0.0.1 - - [20/May/2026 19:23:22] "GET /api/trusted-contacts HTTP/1.1" 200 -

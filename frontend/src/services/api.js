@@ -240,4 +240,57 @@ export const contactAPI = {
 };
 
 
+// =========================================
+// USER PROFILE API
+// =========================================
+export const userAPI = {
+  getProfile: () => apiFetch('/users/me'),
+  
+  updateProfile: (data) => apiFetch('/users/me', {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  }),
+  
+  changePassword: (data) => apiFetch('/users/change-password', {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  }),
+};
+
+
+// =========================================
+// ADMIN API
+// =========================================
+export const adminAPI = {
+  getAllUsers: () =>
+    apiFetch('/admin/users'),
+
+  deleteUser: (id) =>
+    apiFetch(`/admin/users/${id}`, {
+      method: 'DELETE',
+    }),
+
+  updateUserRole: (id, role) =>
+    apiFetch(`/admin/users/${id}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
+    }),
+
+  toggleUserStatus: (id) =>
+    apiFetch(`/admin/users/${id}/status`, {
+      method: 'PATCH',
+    }),
+};
+
+// =========================================
+// LOCATION API
+// =========================================
+export const locationAPI = {
+
+  // Get nearby places (amenities)
+  getNearbyPlaces: (lat, lng, amenity) =>
+    apiFetch(`/locations/nearby?lat=${lat}&lng=${lng}&amenity=${amenity}`),
+};
+
+
 export default apiFetch;

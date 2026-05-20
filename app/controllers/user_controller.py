@@ -55,6 +55,7 @@ def get_my_profile():
                 "email": user.email,
                 "role": user.role.name,
                 "is_active": user.is_active,
+                "profile_image": user.profile_image,
                 "created_at": user.created_at
             }
         },
@@ -101,6 +102,10 @@ def update_my_profile():
         if "full_name" in validated_data:
 
             user.full_name = validated_data["full_name"]
+        
+        if "profile_image" in validated_data:
+            
+            user.profile_image = validated_data["profile_image"]
 
         db.session.commit()
 
@@ -110,7 +115,8 @@ def update_my_profile():
                 "user": {
                     "id": user.id,
                     "full_name": user.full_name,
-                    "email": user.email
+                    "email": user.email,
+                    "profile_image": user.profile_image
                 }
             },
             status_code=200

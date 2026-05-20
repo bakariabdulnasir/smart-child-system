@@ -52,14 +52,16 @@ def create_app():
 
     app = Flask(__name__)
     CORS(
-    app,
-    resources={
-        r"/api/*": {
-            "origins": "http://localhost:3000"
+        app,
+        resources={
+            r"/api/*": {
+                "origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+                "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+                "allow_headers": ["Content-Type", "Authorization"],
+                "supports_credentials": True
+            }
         }
-    },
-    supports_credentials=True
-)
+    )
 
     app.config.from_object(Config)
 
@@ -67,7 +69,12 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     ma.init_app(app)
+    
+    # Configure JWT with the secret key from Config BEFORE initializing JWT
+    app.config['JWT_SECRET_KEY'] = Config.JWT_SECRET_KEY
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False  # Disable expiration for development
     jwt.init_app(app)
+    
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_bp)

@@ -15,12 +15,30 @@ from app.utils.response import (
 child_schema = ChildSchema()
 
 
+def serialize_child(child):
+    """Helper function to serialize a child object"""
+    return {
+        "id": child.id,
+        "full_name": child.full_name,
+        "age": child.age,
+        "gender": child.gender,
+        "profile_image": child.profile_image,
+        "school": child.school,
+        "medical_notes": child.medical_notes,
+        "allergies": child.allergies,
+        "emergency_contact": child.emergency_contact,
+        "emergency_phone": child.emergency_phone,
+        "created_at": child.created_at.isoformat() if child.created_at else None
+    }
+
+
 # CREATE CHILD
 def create_child():
     try:
         current_user_id = get_jwt_identity()
-
-        user = User.query.get(current_user_id)
+        user_id = int(current_user_id)
+        
+        user = User.query.get(user_id)
 
         if not user:
             return error_response(
@@ -36,7 +54,13 @@ def create_child():
             full_name=validated_data["full_name"],
             age=validated_data["age"],
             gender=validated_data["gender"],
-            parent_id=user.id
+            parent_id=user.id,
+            profile_image=validated_data.get("profile_image"),
+            school=validated_data.get("school"),
+            medical_notes=validated_data.get("medical_notes"),
+            allergies=validated_data.get("allergies"),
+            emergency_contact=validated_data.get("emergency_contact"),
+            emergency_phone=validated_data.get("emergency_phone")
         )
 
         db.session.add(child)
@@ -45,12 +69,7 @@ def create_child():
         return success_response(
             message="Child created successfully",
             data={
-                "child": {
-                    "id": child.id,
-                    "full_name": child.full_name,
-                    "age": child.age,
-                    "gender": child.gender
-                }
+                "child": serialize_child(child)
             },
             status_code=201
         )
@@ -73,21 +92,21 @@ def create_child():
 # GET ALL CHILDREN
 def get_children():
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id_str = get_jwt_identity()
+        
+        if not current_user_id_str:
+            return error_response(
+                message="No user logged in",
+                status_code=401
+            )
+        
+        current_user_id = int(current_user_id_str)
 
         children = Child.query.filter_by(
             parent_id=current_user_id
         ).all()
 
-        children_data = []
-
-        for child in children:
-            children_data.append({
-                "id": child.id,
-                "full_name": child.full_name,
-                "age": child.age,
-                "gender": child.gender
-            })
+        children_data = [serialize_child(child) for child in children]
 
         return success_response(
             message="Children retrieved successfully",
@@ -97,6 +116,11 @@ def get_children():
             status_code=200
         )
 
+    except ValueError:
+        return error_response(
+            message="Invalid user token",
+            status_code=401
+        )
     except Exception as e:
         return error_response(
             message="Failed to retrieve children",
@@ -108,7 +132,7 @@ def get_children():
 # GET SINGLE CHILD
 def get_child(child_id):
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
 
         child = Child.query.filter_by(
             id=child_id,
@@ -124,12 +148,7 @@ def get_child(child_id):
         return success_response(
             message="Child retrieved successfully",
             data={
-                "child": {
-                    "id": child.id,
-                    "full_name": child.full_name,
-                    "age": child.age,
-                    "gender": child.gender
-                }
+                "child": serialize_child(child)
             },
             status_code=200
         )
@@ -145,7 +164,7 @@ def get_child(child_id):
 # UPDATE CHILD
 def update_child(child_id):
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
 
         child = Child.query.filter_by(
             id=child_id,
@@ -165,32 +184,41 @@ def update_child(child_id):
             partial=True
         )
 
-        child.full_name = validated_data.get(
-            "full_name",
-            child.full_name
-        )
-
-        child.age = validated_data.get(
-            "age",
-            child.age
-        )
-
-        child.gender = validated_data.get(
-            "gender",
-            child.gender
-        )
+        # Handle updates - only update if the field is provided in the request
+        if "full_name" in data:
+            child.full_name = data["full_name"]
+        
+        if "age" in data:
+            child.age = data["age"]
+        
+        if "gender" in data:
+            child.gender = data["gender"]
+        
+        # Handle profile_image - allow clearing by explicitly passing null
+        if "profile_image" in data:
+            child.profile_image = data["profile_image"]
+        
+        if "school" in data:
+            child.school = data["school"]
+        
+        if "medical_notes" in data:
+            child.medical_notes = data["medical_notes"]
+        
+        if "allergies" in data:
+            child.allergies = data["allergies"]
+        
+        if "emergency_contact" in data:
+            child.emergency_contact = data["emergency_contact"]
+        
+        if "emergency_phone" in data:
+            child.emergency_phone = data["emergency_phone"]
 
         db.session.commit()
 
         return success_response(
             message="Child updated successfully",
             data={
-                "child": {
-                    "id": child.id,
-                    "full_name": child.full_name,
-                    "age": child.age,
-                    "gender": child.gender
-                }
+                "child": serialize_child(child)
             },
             status_code=200
         )
@@ -213,7 +241,7 @@ def update_child(child_id):
 # DELETE CHILD
 def delete_child(child_id):
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
 
         child = Child.query.filter_by(
             id=child_id,
