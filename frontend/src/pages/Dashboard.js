@@ -25,10 +25,25 @@ const Dashboard = () => {
   const [showAddContactModal, setShowAddContactModal] = useState(false);
   
   // Form states
-  const [childForm, setChildForm] = useState({ name: "", age: "", school: "", medical_notes: "" });
-  const [eventForm, setEventForm] = useState({ title: "", datetime: "", location: "", description: "" });
-  const [taskForm, setTaskForm] = useState({ title: "", deadline: "", priority: "medium" });
-  const [contactForm, setContactForm] = useState({ name: "", phone: "", email: "", role: "friend" });
+const [childForm, setChildForm] = useState({
+  full_name: "",
+  age: "",
+  gender: "",
+});
+const [eventForm, setEventForm] = useState({
+  title: "",
+  event_date: "",
+  location: "",
+  description: "",
+});
+const [taskForm, setTaskForm] = useState({
+  title: "",
+  description: "",
+  due_date: "",
+  priority: "medium",
+  child_id: "",
+});
+  const [contactForm, setContactForm] = useState({ full_name: "", phone_number: "", email: "", relationship: "" });
   
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
@@ -74,7 +89,7 @@ const Dashboard = () => {
       });
       if (response.ok) {
         showSuccess("Child added successfully!");
-        setChildForm({ name: "", age: "", school: "", medical_notes: "" });
+        setChildForm({ full_name: "", age: "", gender : "" });
         setShowAddChildModal(false);
       } else {
         const error = await response.json();
@@ -175,7 +190,14 @@ const Dashboard = () => {
     );
   }
 
-  const { counts, children, recent_tasks, upcoming_events, trusted_contacts, recent_notifications } = dashboardData;
+const {
+  counts = {},
+  children = [],
+  recent_tasks = [],
+  upcoming_events = [],
+  trusted_contacts = [],
+  recent_notifications = [],
+} = dashboardData || {};
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -221,17 +243,17 @@ const Dashboard = () => {
             Welcome back, {user?.full_name || "Parent"}!
           </h1>
           <p className="text-lg opacity-90">
-            Your family's day is looking productive. You have {counts.events} upcoming events and{" "}
-            {counts.pending_tasks} pending tasks.
-          </p>
+  Your family's day is looking productive. You have {counts?.events || 0} upcoming events and{" "}
+  {counts?.pending_tasks || 0} pending tasks.
+</p>
         </div>
 
         {/* ========================= STATS ========================= */}
         <div className="grid md:grid-cols-4 gap-6 mb-10">
-          <StatCard title="Upcoming Events" value={counts.events} subtitle="This Week" icon={<Calendar />} />
-          <StatCard title="Pending Tasks" value={counts.pending_tasks} subtitle="High Priority" icon={<ClipboardList />} />
-          <StatCard title="Children Tracked" value={counts.children} subtitle="Active Profiles" icon={<Users />} />
-          <StatCard title="Notifications" value={counts.notifications} subtitle="Recent Alerts" icon={<Bell />} />
+         <StatCard title="Upcoming Events" value={counts?.events || 0}subtitle="This Week" icon={<Calendar />} />
+          <StatCard title="Pending Tasks" value={counts?.pending_tasks || 0} subtitle="High Priority" icon={<ClipboardList />} />
+          <StatCard title="Children Tracked" value={counts?.children || 0} subtitle="Active Profiles" icon={<Users />} />
+          <StatCard title="Notifications" value={counts?.notifications || 0} subtitle="Recent Alerts" icon={<Bell />} />
         </div>
 
         {/* ========================= QUICK ACTIONS ========================= */}
@@ -260,7 +282,7 @@ const Dashboard = () => {
                   <div className="p-6">
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="text-2xl font-bold">{child.name}</h3>
+                        <h3 className="text-2xl font-bold">{child.full_name}</h3>
                         <p className="text-gray-500">{child.age} Years Old</p>
                       </div>
                       <User className="text-pink-500" />
@@ -356,37 +378,218 @@ const Dashboard = () => {
       {/* ========================= MODALS ========================= */}
 
       {/* Add Child Modal */}
-      {showAddChildModal && (
-        <Modal title="Add New Child" onClose={() => setShowAddChildModal(false)} onSubmit={handleAddChild} submitting={submitting}>
-          <input type="text" placeholder="Child's Name" value={childForm.name} onChange={(e) => setChildForm({ ...childForm, name: e.target.value })} className="w-full px-4 py-2 border rounded-lg mb-3" required />
-          <input type="number" placeholder="Age" value={childForm.age} onChange={(e) => setChildForm({ ...childForm, age: e.target.value })} className="w-full px-4 py-2 border rounded-lg mb-3" required />
-          <input type="text" placeholder="School" value={childForm.school} onChange={(e) => setChildForm({ ...childForm, school: e.target.value })} className="w-full px-4 py-2 border rounded-lg mb-3" required />
-          <textarea placeholder="Medical Notes (optional)" value={childForm.medical_notes} onChange={(e) => setChildForm({ ...childForm, medical_notes: e.target.value })} className="w-full px-4 py-2 border rounded-lg" rows="3" />
-        </Modal>
-      )}
+     {showAddChildModal && (
+  <Modal
+    title="Add New Child"
+    onClose={() => setShowAddChildModal(false)}
+    onSubmit={handleAddChild}
+    submitting={submitting}
+  >
 
+    <input
+      type="text"
+      placeholder="Child's Name"
+      value={childForm.full_name}
+      onChange={(e) =>
+        setChildForm({
+          ...childForm,
+          full_name: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg mb-3"
+      required
+    />
+
+    <input
+      type="number"
+      placeholder="Age"
+      value={childForm.age}
+      onChange={(e) =>
+        setChildForm({
+          ...childForm,
+          age: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg mb-3"
+      required
+    />
+
+    <select
+      value={childForm.gender}
+      onChange={(e) =>
+        setChildForm({
+          ...childForm,
+          gender: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg mb-3"
+      required
+    >
+      <option value="">Select Gender</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+
+  </Modal>
+)}
       {/* Create Event Modal */}
-      {showCreateEventModal && (
-        <Modal title="Create New Event" onClose={() => setShowCreateEventModal(false)} onSubmit={handleCreateEvent} submitting={submitting}>
-          <input type="text" placeholder="Event Title" value={eventForm.title} onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })} className="w-full px-4 py-2 border rounded-lg mb-3" required />
-          <input type="datetime-local" value={eventForm.datetime} onChange={(e) => setEventForm({ ...eventForm, datetime: e.target.value })} className="w-full px-4 py-2 border rounded-lg mb-3" required />
-          <input type="text" placeholder="Location" value={eventForm.location} onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })} className="w-full px-4 py-2 border rounded-lg mb-3" />
-          <textarea placeholder="Description (optional)" value={eventForm.description} onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })} className="w-full px-4 py-2 border rounded-lg" rows="3" />
-        </Modal>
-      )}
+     {showCreateEventModal && (
+  <Modal
+    title="Create New Event"
+    onClose={() => setShowCreateEventModal(false)}
+    onSubmit={handleCreateEvent}
+    submitting={submitting}
+  >
+
+    <input
+      type="text"
+      placeholder="Event Title"
+      value={eventForm.title}
+      onChange={(e) =>
+        setEventForm({
+          ...eventForm,
+          title: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg mb-3"
+      required
+    />
+
+    <input
+      type="datetime-local"
+      value={eventForm.event_date}
+      onChange={(e) =>
+        setEventForm({
+          ...eventForm,
+          event_date: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg mb-3"
+      required
+    />
+
+    <input
+      type="text"
+      placeholder="Location"
+      value={eventForm.location}
+      onChange={(e) =>
+        setEventForm({
+          ...eventForm,
+          location: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg mb-3"
+    />
+
+    <textarea
+      placeholder="Description (optional)"
+      value={eventForm.description}
+      onChange={(e) =>
+        setEventForm({
+          ...eventForm,
+          description: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg"
+      rows="3"
+    />
+
+  </Modal>
+)}
 
       {/* Add Task Modal */}
-      {showAddTaskModal && (
-        <Modal title="Add New Task" onClose={() => setShowAddTaskModal(false)} onSubmit={handleAddTask} submitting={submitting}>
-          <input type="text" placeholder="Task Title" value={taskForm.title} onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })} className="w-full px-4 py-2 border rounded-lg mb-3" required />
-          <input type="date" placeholder="Deadline" value={taskForm.deadline} onChange={(e) => setTaskForm({ ...taskForm, deadline: e.target.value })} className="w-full px-4 py-2 border rounded-lg mb-3" />
-          <select value={taskForm.priority} onChange={(e) => setTaskForm({ ...taskForm, priority: e.target.value })} className="w-full px-4 py-2 border rounded-lg mb-3">
-            <option value="low">Low Priority</option>
-            <option value="medium">Medium Priority</option>
-            <option value="high">High Priority</option>
-          </select>
-        </Modal>
-      )}
+    {/* Add Task Modal */}
+{showAddTaskModal && (
+  <Modal
+    title="Add New Task"
+    onClose={() => setShowAddTaskModal(false)}
+    onSubmit={handleAddTask}
+    submitting={submitting}
+  >
+
+    <input
+      type="text"
+      placeholder="Task Title"
+      value={taskForm.title}
+      onChange={(e) =>
+        setTaskForm({
+          ...taskForm,
+          title: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg mb-3"
+      required
+    />
+
+    <textarea
+      placeholder="Description"
+      value={taskForm.description}
+      onChange={(e) =>
+        setTaskForm({
+          ...taskForm,
+          description: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg mb-3"
+      rows="3"
+    />
+
+    <input
+      type="date"
+      value={taskForm.due_date}
+      onChange={(e) =>
+        setTaskForm({
+          ...taskForm,
+          due_date: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg mb-3"
+    />
+
+    <select
+      value={taskForm.priority}
+      onChange={(e) =>
+        setTaskForm({
+          ...taskForm,
+          priority: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg mb-3"
+    >
+      <option value="low">Low Priority</option>
+      <option value="medium">Medium Priority</option>
+      <option value="high">High Priority</option>
+    </select>
+
+    <select
+      value={taskForm.child_id}
+      onChange={(e) =>
+        setTaskForm({
+          ...taskForm,
+          child_id: e.target.value
+        })
+      }
+      className="w-full px-4 py-2 border rounded-lg"
+      required
+    >
+
+      <option value="">
+        Select Child
+      </option>
+
+      {children.map((child) => (
+        <option
+          key={child.id}
+          value={child.id}
+        >
+          {child.full_name}
+        </option>
+      ))}
+
+    </select>
+
+  </Modal>
+)}
 
       {/* Add Contact Modal */}
       {showAddContactModal && (
