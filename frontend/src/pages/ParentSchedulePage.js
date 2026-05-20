@@ -35,4 +35,22 @@ return (
   </div>
 );
 
+const [form, setForm] = useState({
+  title: "",
+  event_date: "",
+  location: "",
+  description: ""
+});
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  await apiFetch("/events", {
+    method: "POST",
+    body: JSON.stringify(form)
+  });
+
+  loadEvents();
+};
+
 export default ParentSchedulePage;
