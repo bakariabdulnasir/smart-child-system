@@ -30,7 +30,7 @@ event_bp.route(
 
 event_bp.route(
     "/events/<int:id>",
-    methods=["PATCH"]
+    methods=["PUT", "PATCH"]
 )(update_event)
 
 event_bp.route(

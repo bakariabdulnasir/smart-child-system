@@ -5,24 +5,23 @@ import {
   Calendar, 
   ClipboardList, 
   LogOut, 
-  Users, 
   User, 
   Plus, 
   CheckCircle, 
-  X,
   Trash2,
   Edit,
   AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useChildren } from '../context/ChildrenContext';
 import { apiFetch } from '../services/api';
 
 const Tasks = () => {
   const { user, logout } = useAuth();
+  const { children, loading: childrenLoading } = useChildren();
   const navigate = useNavigate();
   
   const [tasks, setTasks] = useState([]);
-  const [children, setChildren] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
@@ -41,20 +40,12 @@ const Tasks = () => {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    fetchData();
+    fetchTasks();
   }, []);
 
-  const fetchData = async () => {
+  const fetchTasks = async () => {
     setLoading(true);
     try {
-      // Fetch children first for the dropdown
-      const childrenRes = await apiFetch('/children');
-      if (childrenRes.ok) {
-        const childrenData = await childrenRes.json();
-        const childList = childrenData.data?.children || childrenData.children || [];
-        setChildren(childList);
-      }
-      
       // Fetch all tasks
       const tasksRes = await apiFetch('/tasks');
       if (tasksRes.ok) {
@@ -70,17 +61,28 @@ const Tasks = () => {
   };
 
   const getChildName = (childId) => {
+    if (!children || children.length === 0) return 'Unknown';
     const child = children.find(c => c.id === childId);
     return child?.full_name || child?.name || 'Unknown';
   };
+
+  // Check if we have children available
+  const hasChildren = children && children.length > 0;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     
-    if (!taskForm.title || !taskForm.child_id) {
+if (!taskForm.title || !taskForm.child_id) {
       setError('Title and child are required');
+      return;
+    }
+    
+    // Validate child_id is a valid number (not 0, empty string, or invalid)
+    const childIdNum = parseInt(taskForm.child_id, 10);
+    if (isNaN(childIdNum) || childIdNum <= 0) {
+      setError('Please select a valid child');
       return;
     }
     
@@ -108,7 +110,7 @@ const Tasks = () => {
         });
       }
       
-      if (res.ok) {
+if (res.ok) {
         setSuccess(editingTask ? 'Task updated successfully!' : 'Task added successfully!');
         setTaskForm({
           title: '',
@@ -120,7 +122,7 @@ const Tasks = () => {
         });
         setShowForm(false);
         setEditingTask(null);
-        fetchData();
+        fetchTasks();
         setTimeout(() => setSuccess(''), 3000);
       } else {
         const data = await res.json();
@@ -151,9 +153,9 @@ const errorMsg = data.message || data.error || (data.errors && JSON.stringify(da
         const res = await apiFetch(`/tasks/${id}`, {
           method: 'DELETE'
         });
-        if (res.ok) {
+if (res.ok) {
           setSuccess('Task deleted successfully!');
-          fetchData();
+          fetchTasks();
           setTimeout(() => setSuccess(''), 3000);
         } else {
           setError('Failed to delete task');
@@ -170,9 +172,9 @@ const errorMsg = data.message || data.error || (data.errors && JSON.stringify(da
         method: 'PUT',
         body: JSON.stringify({ status: 'completed' })
       });
-      if (res.ok) {
+if (res.ok) {
         setSuccess('Task completed!');
-        fetchData();
+        fetchTasks();
         setTimeout(() => setSuccess(''), 3000);
       } else {
         setError('Failed to complete task');
@@ -272,10 +274,22 @@ const errorMsg = data.message || data.error || (data.errors && JSON.stringify(da
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Tasks</h1>
-          {!showForm && (
+{!showForm && (
             <button
               onClick={() => setShowForm(true)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
+              disabled={!hasChildren || childrenLoading}
+              className={`px-4 py-2 rounded-lg flex items-center gap-2 transition ${
+                !hasChildren || childrenLoading
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+              }`}
+              title={
+                !hasChildren
+                  ? 'Add a child first to create a task'
+                  : childrenLoading
+                  ? 'Loading children...'
+                  : 'Add a new task'
+              }
             >
               <Plus size={20} />
               Add Task
@@ -316,21 +330,31 @@ const errorMsg = data.message || data.error || (data.errors && JSON.stringify(da
                     required
                   />
                 </div>
-                <div>
+<div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Child *</label>
-                  <select
-                    value={taskForm.child_id}
-                    onChange={(e) => setTaskForm({ ...taskForm, child_id: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                    required
-                  >
-                    <option value="">Select Child</option>
-                    {children.map(child => (
-                      <option key={child.id} value={child.id}>
-                        {child.full_name || child.name}
-                      </option>
-                    ))}
-                  </select>
+                  {childrenLoading ? (
+                    <div className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-500">
+                      Loading children...
+                    </div>
+                  ) : !hasChildren ? (
+                    <div className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-500">
+                      No children available. Please add a child first.
+                    </div>
+                  ) : (
+                    <select
+                      value={taskForm.child_id}
+                      onChange={(e) => setTaskForm({ ...taskForm, child_id: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                      required
+                    >
+                      <option value="">Select Child</option>
+                      {children.map(child => (
+                        <option key={child.id} value={child.id}>
+                          {child.full_name || child.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>

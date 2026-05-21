@@ -40,43 +40,43 @@ def dashboard_summary():
     pending_tasks = [task for task in tasks if hasattr(task, "status") and task.status == "pending"]
     pending_count = len(pending_tasks)
 
-    # =====================================
-    # EVENTS
+# =====================================
+    # EVENTS - Filter by current user to prevent duplication
     # =====================================
     try:
-        events = Event.query.all()
+        events = Event.query.filter_by(user_id=current_user_id).all()
     except Exception:
         events = []
 
     # =====================================
-    # SCHEDULES
+    # SCHEDULES - Filter by current user
     # =====================================
     try:
-        schedules = Schedule.query.all()
+        schedules = Schedule.query.filter_by(user_id=current_user_id).all()
     except Exception:
         schedules = []
 
     # =====================================
-    # REMINDERS
+    # REMINDERS - Filter by current user
     # =====================================
     try:
-        reminders = Reminder.query.all()
+        reminders = Reminder.query.filter_by(user_id=current_user_id).all()
     except Exception:
         reminders = []
 
     # =====================================
-    # NOTIFICATIONS
+    # NOTIFICATIONS - Filter by current user
     # =====================================
     try:
-        notifications = Notification.query.all()
+        notifications = Notification.query.filter_by(user_id=current_user_id).all()
     except Exception:
         notifications = []
 
     # =====================================
-    # TRUSTED CONTACTS
+    # TRUSTED CONTACTS - Filter by current user to prevent data leakage
     # =====================================
     try:
-        contacts = TrustedContact.query.all()
+        contacts = TrustedContact.query.filter_by(user_id=current_user_id).all()
     except Exception:
         contacts = []
 
@@ -139,11 +139,11 @@ def dashboard_summary():
                 }
                 for task in recent_tasks
             ],
-            "upcoming_events": [
+"upcoming_events": [
                 {
                     "id": event.id if hasattr(event, "id") else "",
                     "title": event.title if hasattr(event, "title") else "",
-                    "datetime": str(event.datetime) if hasattr(event, "datetime") else "",
+                    "datetime": str(event.event_date) if hasattr(event, "event_date") else "",
                     "location": event.location if hasattr(event, "location") else ""
                 }
                 for event in upcoming_events
@@ -158,8 +158,8 @@ def dashboard_summary():
             "trusted_contacts": [
                 {
                     "id": contact.id if hasattr(contact, "id") else "",
-                    "name": contact.name if hasattr(contact, "name") else "",
-                    "phone": contact.phone if hasattr(contact, "phone") else ""
+                    "name": contact.full_name if hasattr(contact, "full_name") else "",
+                    "phone": contact.phone_number if hasattr(contact, "phone_number") else ""
                 }
                 for contact in contacts
             ]

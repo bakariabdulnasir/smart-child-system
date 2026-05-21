@@ -65,25 +65,15 @@ const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
 
 useEffect(() => {
-    const timer = setTimeout(() => {
-      // Force stop loading after 10 seconds
-      if (loading) {
-        setDashboardData({
-          counts: { events: 0, pending_tasks: 0, children: 0, notifications: 0 },
-          children: [],
-          recent_tasks: [],
-          upcoming_events: [],
-          trusted_contacts: [],
-          recent_notifications: []
-        });
-        setLoading(false);
-      }
-    }, 10000);
-    
+    // Fetch dashboard data on mount only
+    // NOTE: Removed the 10-second timeout that was force-resetting data to zero
+    // This was causing data to reset even when loaded correctly
     fetchDashboard();
-    
-    return () => clearTimeout(timer);
   }, []);
+
+// NOTE: Removed separate fetchChildren function
+  // Children data is now managed by ChildrenContext
+  // This prevents duplicate fetching which was causing state resets when modals open/close
 
   const fetchDashboard = async () => {
     setLoading(true);
@@ -131,25 +121,18 @@ useEffect(() => {
           recent_notifications: []
         });
       }
-    } catch (error) {
+} catch (error) {
       console.error("Dashboard Error:", error);
-      setDashboardData({
-        counts: { events: 0, pending_tasks: 0, children: 0, notifications: 0 },
-        children: [],
-        recent_tasks: [],
-        upcoming_events: [],
-        trusted_contacts: [],
-        recent_notifications: []
-      });
+      // NOTE: Don't reset data on error - preserve existing data
+      // This prevents data from disappearing when there's a network error
     } finally {
       setLoading(false);
     }
   };
 
-  const showSuccess = (text) => {
+const showSuccess = (text) => {
     setMessage({ text, type: "success" });
     setTimeout(() => setMessage({ text: "", type: "" }), 3000);
-    fetchDashboard(); // Refresh data
   };
 
   const showError = (text) => {
@@ -178,14 +161,13 @@ useEffect(() => {
       const response = await apiFetch("/children", {
         method: "POST",
         body: JSON.stringify(childData),
-      });
+});
       if (response.ok) {
         showSuccess("Child added successfully!");
         setChildForm({ name: "", age: "", school: "", medical_notes: "", gender: "male", profile_image: "", allergies: "", emergency_contact: "", emergency_phone: "" });
         setChildForm({ full_name: "", age: "", gender : "" });
         setShowAddChildModal(false);
-        fetchDashboard(); // Refresh to show new child
-} else {
+      } else {
         const err = await response.json();
         showError(err.message || err.error || "Failed to add child");
       }
@@ -217,7 +199,7 @@ useEffect(() => {
         showSuccess("Event created successfully!");
         setEventForm({ title: "", event_date: "", location: "", description: "", child_id: "" });
         setShowCreateEventModal(false);
-} else {
+      } else {
         const err = await response.json();
         showError(err.message || err.error || "Failed to create event");
       }
@@ -244,12 +226,12 @@ useEffect(() => {
       const response = await apiFetch("/tasks", {
         method: "POST",
         body: JSON.stringify(taskData),
-      });
+});
       if (response.ok) {
         showSuccess("Task added successfully!");
         setTaskForm({ title: "", due_date: "", priority: "medium", child_id: "" });
         setShowAddTaskModal(false);
-} else {
+      } else {
         const err = await response.json();
         showError(err.message || err.error || "Failed to add task");
       }
@@ -281,7 +263,7 @@ useEffect(() => {
         showSuccess("Schedule added successfully!");
         setScheduleForm({ title: "", description: "", start_time: "", end_time: "", child_id: "" });
         setShowScheduleModal(false);
-} else {
+      } else {
         const err = await response.json();
         showError(err.message || err.error || "Failed to add schedule");
       }
@@ -292,20 +274,29 @@ useEffect(() => {
     }
   };
 
-  // Add Contact
+// Add Contact
   const handleAddContact = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    // Transform frontend field names to match backend schema: full_name, phone_number, relationship
+    const contactData = {
+      full_name: contactForm.name,
+      phone_number: contactForm.phone,
+      email: contactForm.email || null,
+      relationship: contactForm.role || "friend",
+      address: null,
+      is_emergency_contact: false
+    };
     try {
       const response = await apiFetch("/trusted-contacts", {
         method: "POST",
-        body: JSON.stringify(contactForm),
+        body: JSON.stringify(contactData),
       });
       if (response.ok) {
         showSuccess("Contact added successfully!");
         setContactForm({ name: "", phone: "", email: "", role: "friend" });
         setShowAddContactModal(false);
-} else {
+      } else {
         const err = await response.json();
         showError(err.message || err.error || "Failed to add contact");
       }

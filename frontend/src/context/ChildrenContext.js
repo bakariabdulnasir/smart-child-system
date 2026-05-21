@@ -35,36 +35,18 @@ export const ChildrenProvider = ({ children: childrenProp }) => {
     }
   }, []);
 
-  // Initialize children on mount
+// Initialize children on mount only
   useEffect(() => {
     fetchChildren();
   }, [fetchChildren]);
 
-  // Refresh children when page becomes visible (fixes disappearing children issue)
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        // Page became visible, refresh children data
-        fetchChildren();
-      }
-    };
+  // NOTE: Removed visibilitychange and focus event listeners
+  // These were causing dashboard stats to reset when modals open/close
+  // because opening a modal makes document.hidden=true, and closing it
+  // triggers a visibility change that auto-refetches, resetting the parent state.
+  // Data should only refresh on explicit user actions (addChild, updateChild, removeChild)
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    // Also refresh on window focus
-    const handleFocus = () => {
-      fetchChildren();
-    };
-    
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, [fetchChildren]);
-
-  const addChild = useCallback(async (newChild) => {
+const addChild = useCallback(async (newChild) => {
     // Optimistically add to local state
     setChildrenList(prev => [...prev, newChild]);
     // Then fetch fresh data from backend to ensure consistency

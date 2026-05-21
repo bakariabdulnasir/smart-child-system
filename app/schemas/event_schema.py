@@ -21,3 +21,5 @@ class EventSchema(Schema):
     event_date = fields.DateTime(
         required=True
     )
+
+    child_id = fields.Integer(required=False)

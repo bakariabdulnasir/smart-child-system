@@ -8,11 +8,12 @@ import {
   Camera,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useChildren } from "../context/ChildrenContext";
 import { userAPI } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, setUser } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -62,12 +63,29 @@ const Settings = () => {
     try {
       const response = await userAPI.updateProfile(profileData);
       const data = await response.json();
-      if (response.ok && data.success) {
+if (response.ok && data.success) {
         showSuccess("Profile updated successfully!");
         // Update localStorage with new profile image
         if (profileData.profile_image) {
           localStorage.setItem("profile_image", profileData.profile_image);
         }
+        // Update AuthContext with new profile data
+        if (setUser) {
+          setUser((prev) => ({
+            ...prev,
+            full_name: profileData.full_name,
+            email: profileData.email,
+            profile_image: profileData.profile_image
+          }));
+        }
+        // Also update stored user data
+        const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+        localStorage.setItem("user", JSON.stringify({
+          ...storedUser,
+          full_name: profileData.full_name,
+          email: profileData.email,
+          profile_image: profileData.profile_image
+        }));
       } else {
         showError(data.message || "Failed to update profile");
       }

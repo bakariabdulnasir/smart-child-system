@@ -229,7 +229,7 @@ export const contactAPI = {
 
   update: (id, data) =>
     apiFetch(`/trusted-contacts/${id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(data),
     }),
 

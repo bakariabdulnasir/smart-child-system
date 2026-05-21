@@ -31,6 +31,7 @@ class TaskSchema(Schema):
 
     due_date = fields.Date()
 
-    child_id = fields.Integer(
-        required=True
+child_id = fields.Integer(
+        required=False,
+        allow_none=True
     )

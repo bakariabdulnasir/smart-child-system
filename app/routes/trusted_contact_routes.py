@@ -42,7 +42,7 @@ trusted_contact_bp.route(
 
 trusted_contact_bp.route(
     "/trusted-contacts/<int:contact_id>",
-    methods=["PATCH"]
+    methods=["PUT", "PATCH"]
 )(
     jwt_required()(update_trusted_contact)
 )

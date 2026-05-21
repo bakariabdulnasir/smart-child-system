@@ -3,25 +3,22 @@ import { useNavigate } from "react-router-dom";
 import {
   Bell,
   Calendar,
-  ClipboardList,
   LogOut,
-  Users,
-  User,
   Plus,
-  CheckCircle,
   X,
   Trash2,
   Edit,
   Clock,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useChildren } from "../context/ChildrenContext";
 import { apiFetch } from "../services/api";
 
 const Schedule = () => {
   const { user, logout } = useAuth();
+  const { children, loading: childrenLoading } = useChildren();
   const navigate = useNavigate();
   const [schedules, setSchedules] = useState([]);
-  const [children, setChildren] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -38,7 +35,6 @@ const Schedule = () => {
 
   useEffect(() => {
     fetchSchedules();
-    fetchChildren();
   }, []);
 
   const fetchSchedules = async () => {
@@ -69,34 +65,6 @@ const Schedule = () => {
       setSchedules([]);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchChildren = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/children", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        if (result.data && result.data.children) {
-          setChildren(result.data.children);
-        } else if (result.data && Array.isArray(result.data)) {
-          setChildren(result.data);
-        } else {
-          setChildren([]);
-        }
-      } else {
-        setChildren([]);
-      }
-    } catch (error) {
-      console.error("Error fetching children:", error);
-      setChildren([]);
     }
   };
 
@@ -221,10 +189,15 @@ const handleEdit = (schedule) => {
     setShowModal(true);
   };
 
+// Get child name from the children in context
   const getChildName = (childId) => {
+    if (!children || children.length === 0) return "Unknown";
     const child = children.find((c) => c.id === childId);
     return child ? child.full_name || child.name : "Unknown";
   };
+
+  // Check if we have children available
+  const hasChildren = children && children.length > 0;
 
   const formatDateTime = (dateTimeStr) => {
     if (!dateTimeStr) return "";
@@ -296,9 +269,21 @@ const handleEdit = (schedule) => {
               Manage your children's activities and appointments
             </p>
           </div>
-          <button
+<button
             onClick={openAddModal}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+            disabled={!hasChildren || childrenLoading}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+              !hasChildren || childrenLoading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700"
+            } text-white`}
+            title={
+              !hasChildren
+                ? "Add a child first to create a schedule"
+                : childrenLoading
+                ? "Loading children..."
+                : "Add a new schedule"
+            }
           >
             <Plus size={20} />
             Add Schedule
@@ -418,25 +403,35 @@ const handleEdit = (schedule) => {
                   />
                 </div>
 
-                <div>
+<div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Child *
                   </label>
-                  <select
-                    value={formData.child_id}
-                    onChange={(e) =>
-                      setFormData({ ...formData, child_id: e.target.value })
-                    }
-                    className="w-full px-4 py-2 border rounded-lg"
-                    required
-                  >
-                    <option value="">Select Child</option>
-                    {children.map((child) => (
-                      <option key={child.id} value={child.id}>
-                        {child.full_name || child.name}
-                      </option>
-                    ))}
-                  </select>
+                  {childrenLoading ? (
+                    <div className="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-500">
+                      Loading children...
+                    </div>
+                  ) : !hasChildren ? (
+                    <div className="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-500">
+                      No children available. Please add a child first.
+                    </div>
+                  ) : (
+                    <select
+                      value={formData.child_id}
+                      onChange={(e) =>
+                        setFormData({ ...formData, child_id: e.target.value })
+                      }
+                      className="w-full px-4 py-2 border rounded-lg"
+                      required
+                    >
+                      <option value="">Select Child</option>
+                      {children.map((child) => (
+                        <option key={child.id} value={child.id}>
+                          {child.full_name || child.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
 
                 <div>
