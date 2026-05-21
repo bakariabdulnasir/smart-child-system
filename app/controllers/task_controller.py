@@ -4,7 +4,10 @@ from flask import request
 
 from marshmallow import ValidationError
 
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_identity
+)
 
 from app.extensions.extensions import db
 
@@ -23,28 +26,34 @@ task_schema = TaskSchema()
 
 
 # CREATE TASK
-
+@jwt_required()
 def create_task():
-
     try:
-
         current_user_id = get_jwt_identity()
-
         data = request.get_json()
-
         validated_data = task_schema.load(data)
-
-        child = Child.query.filter_by(
-            id=validated_data["child_id"],
-            parent_id=current_user_id
-        ).first()
-
-        if not child:
-
-            return error_response(
-                message="Child not found",
-                status_code=404
-            )
+        
+        child_id = validated_data.get("child_id")
+        
+        if child_id:
+            child = Child.query.filter_by(
+                id=child_id,
+                parent_id=current_user_id
+            ).first()
+            if not child:
+                return error_response(
+                    message="Child not found or does not belong to you.",
+                    status_code=404
+                )
+        else:
+            child = Child.query.filter_by(
+                parent_id=current_user_id
+            ).first()
+            if not child:
+                return error_response(
+                    message="No children found. Please add a child first.",
+                    status_code=404
+                )
 
         task = Task(
             title=validated_data["title"],
@@ -96,11 +105,14 @@ def create_task():
 
 
 # GET ALL TASKS
-
-from flask import request
+@jwt_required()
 
 def get_tasks():
+
     try:
+
+        current_user_id = get_jwt_identity()
+        
         page = request.args.get(
             "page",
             1,
@@ -124,13 +136,23 @@ def get_tasks():
         priority = request.args.get(
             "priority"
         )
+        
+        child_id = request.args.get(
+            "child_id",
+            type=int
+        )
 
         sort = request.args.get(
             "sort",
             "desc"
         )
 
-        query = Task.query
+        # Filter tasks by user through child relationship to ensure each user sees only their own tasks
+        query = Task.query.join(Child).filter(Child.parent_id == current_user_id)
+        
+        # Filter by child_id if provided
+        if child_id:
+            query = query.filter(Task.child_id == child_id)
 
         if search:
             query = query.filter(
@@ -197,7 +219,10 @@ def get_tasks():
             errors=str(e),
             status_code=500
         )
+
+
 # GET SINGLE TASK
+@jwt_required()
 
 def get_task(task_id):
 
@@ -241,6 +266,7 @@ def get_task(task_id):
 
 
 # UPDATE TASK
+@jwt_required()
 
 def update_task(task_id):
 
@@ -328,6 +354,7 @@ def update_task(task_id):
 
 
 # DELETE TASK
+@jwt_required()
 
 def delete_task(task_id):
 

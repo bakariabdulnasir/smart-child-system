@@ -35,12 +35,19 @@ def create_event():
 
         current_user_id = get_jwt_identity()
 
+        # Parse the event_date from the input
+        event_date = data["event_date"]
+        if isinstance(event_date, str):
+            # Handle ISO format string
+            event_date = datetime.fromisoformat(event_date.replace('Z', '+00:00'))
+
         event = Event(
             title=data["title"],
             description=data.get("description"),
             location=data["location"],
-            event_date=datetime.fromisoformat(data["event_date"]),
-            user_id=current_user_id
+            event_date=event_date,
+            user_id=current_user_id,
+            child_id=data.get("child_id")  # Link event to child if provided
         )
 
         db.session.add(event)
@@ -60,10 +67,11 @@ def create_event():
         )
 
 
-from flask import request
-
+@jwt_required()
 def get_events():
     try:
+        current_user_id = get_jwt_identity()
+        
         page = request.args.get(
             "page",
             1,
@@ -79,13 +87,23 @@ def get_events():
         search = request.args.get(
             "search"
         )
+        
+        child_id = request.args.get(
+            "child_id",
+            type=int
+        )
 
         sort = request.args.get(
             "sort",
             "desc"
         )
 
-        query = Event.query
+        # Filter events by current user to ensure each user sees only their own events
+        query = Event.query.filter_by(user_id=current_user_id)
+        
+        # Optional: Filter by child_id if provided
+        if child_id:
+            query = query.filter_by(child_id=child_id)
 
         if search:
             query = query.filter(
@@ -117,6 +135,8 @@ def get_events():
                 "title": event.title,
                 "description": event.description,
                 "location": event.location,
+                "datetime": str(event.event_date),
+                "child_id": event.child_id,
                 "event_date": str(event.event_date)
             })
 
@@ -139,8 +159,6 @@ def get_events():
             errors=str(e),
             status_code=500
         )
-
-
 
 
 @jwt_required()
@@ -204,6 +222,9 @@ def update_event(id):
 
         if "event_date" in data:
             event.event_date = data["event_date"]
+
+        if "child_id" in data:
+            event.child_id = data["child_id"]
 
         db.session.commit()
 

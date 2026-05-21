@@ -17,7 +17,10 @@ class TrustedContactSchema(Schema):
         validate=validate.Length(min=7)
     )
 
-    email = fields.Email()
+    email = fields.Email(
+        allow_none=True,
+        load_default=None
+    )
 
     relationship = fields.String(
         required=True,

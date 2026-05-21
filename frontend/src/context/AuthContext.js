@@ -47,16 +47,17 @@ export const AuthProvider = ({ children }) => {
         // Validate token with backend
         const validation = await validateToken(storedToken);
         
-        if (validation.valid && validation.data) {
+if (validation.valid && validation.data) {
           setUser({
             authenticated: true,
             role: validation.data.role,
             full_name: validation.data.full_name,
             email: validation.data.email,
-            id: validation.data.id
+            id: validation.data.id,
+            profile_image: validation.data.profile_image || null
           });
-          localStorage.setItem('user', JSON.stringify(validation.data));
-        } else if (storedUser) {
+          localStorage.setItem('user', JSON.stringify({...validation.data, profile_image: validation.data.profile_image || null}));
+} else if (storedUser) {
           const userData = JSON.parse(storedUser);
           setUser({
             authenticated: true,
@@ -64,6 +65,7 @@ export const AuthProvider = ({ children }) => {
             full_name: userData.full_name,
             email: userData.email,
             id: userData.id,
+            profile_image: userData.profile_image || null,
             sessionExpired: true
           });
         } else {
@@ -81,7 +83,7 @@ export const AuthProvider = ({ children }) => {
 
 
   // LOGIN
-  const login = async (email, password) => {
+const login = async (email, password) => {
 
     setError(null);
 
@@ -101,7 +103,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token', data.data.access_token);
         
         // Also store user info for session restoration
-        localStorage.setItem('user', JSON.stringify(data.data.user));
+        const userInfo = {
+          ...data.data.user,
+          profile_image: data.data.user.profile_image || null
+        };
+        localStorage.setItem('user', JSON.stringify(userInfo));
 
         // Save user session with role and full info
         setUser({
@@ -109,7 +115,8 @@ export const AuthProvider = ({ children }) => {
           role: data.data.user.role,
           full_name: data.data.user.full_name,
           email: data.data.user.email,
-          id: data.data.user.id
+          id: data.data.user.id,
+          profile_image: data.data.user.profile_image || null
         });
 
         return { success: true };
@@ -237,7 +244,7 @@ export const AuthProvider = ({ children }) => {
   };
 
 
-  const value = {
+const value = {
     user,
     loading,
     error,
@@ -247,6 +254,7 @@ export const AuthProvider = ({ children }) => {
     register,
     requestPasswordReset,
     confirmPasswordReset,
+    setUser,
   };
 
 

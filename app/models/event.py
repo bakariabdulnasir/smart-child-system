@@ -42,6 +42,17 @@ class Event(db.Model):
         nullable=False
     )
 
+    child_id = db.Column(
+        db.Integer,
+        db.ForeignKey("children.id"),
+        nullable=True
+    )
+
+    child = db.relationship(
+        "Child",
+        backref="events"
+    )
+
     user = db.relationship(
         "User",
         back_populates="events"

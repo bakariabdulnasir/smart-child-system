@@ -14,29 +14,52 @@ def get_nearby_places():
 
     try:
 
-        latitude = request.args.get(
-            "lat"
-        )
+        latitude_str = request.args.get("lat")
+        longitude_str = request.args.get("lng")
+        amenity = request.args.get("amenity")
 
-        longitude = request.args.get(
-            "lng"
-        )
-
-        amenity = request.args.get(
-            "amenity"
-        )
-
-        if not latitude or not longitude:
-
+        # Validate latitude is provided and is a valid number
+        if not latitude_str:
             return error_response(
-                message="Latitude and longitude required",
+                message="Latitude is required",
                 status_code=400
             )
 
-        if not amenity:
+        # Validate longitude is provided and is a valid number  
+        if not longitude_str:
+            return error_response(
+                message="Longitude is required",
+                status_code=400
+            )
 
+        # Validate amenity is provided
+        if not amenity:
             return error_response(
                 message="Amenity type required",
+                status_code=400
+            )
+
+        # Convert to float and validate
+        try:
+            latitude = float(latitude_str)
+            longitude = float(longitude_str)
+        except (ValueError, TypeError):
+            return error_response(
+                message="Invalid latitude or longitude: must be numeric values",
+                status_code=400
+            )
+
+        # Validate latitude range (-90 to 90)
+        if latitude < -90 or latitude > 90:
+            return error_response(
+                message="Invalid latitude: must be between -90 and 90",
+                status_code=400
+            )
+
+        # Validate longitude range (-180 to 180)
+        if longitude < -180 or longitude > 180:
+            return error_response(
+                message="Invalid longitude: must be between -180 and 180",
                 status_code=400
             )
 
